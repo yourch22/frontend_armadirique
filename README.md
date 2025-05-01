@@ -1,3 +1,22 @@
+# Frontend - Armadirique
+
+Este es el frontend del sistema web para la mueblería Armadirique, desarrollado con **React**.
+
+## ⚙️ Tecnologías
+- React
+- Vite (o Create React App, según tu caso)
+- Tailwind CSS
+- Axios
+- React Router DOM
+
+## ▶️ Cómo ejecutar
+
+Instala dependencias y ejecuta:
+
+```bash
+npm install
+npm run dev
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
