@@ -79,7 +79,7 @@ const Login = () => {
 
         <nav className="nav-links">
           <a href="#">Inicio</a>
-          <a href="#">Catálogo</a>
+          <a href="#">Catálogo PERSONAS</a>
           <a href="#">Contacto</a>
           <a href="#">Nosotros</a>
         </nav>
