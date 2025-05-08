@@ -3,7 +3,7 @@
 
 Aplicativo web para la mueblería ARMADIRIQUE que permite gestionar de manera eficiente los pedidos en línea, ofreciendo a los clientes la posibilidad de interactuar entre los diversos productos y sus variedades y realizar pagos seguros.
 
-Enlace a la [Documentacion](https://utpedupe-my.sharepoint.com/personal/u24323440_utp_edu_pe/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fu24323440%5Futp%5Fedu%5Fpe%2FDocuments%2FIntegrador&ga=1)
+Enlace a la [Documentacion.](https://utpedupe-my.sharepoint.com/personal/u24323440_utp_edu_pe/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fu24323440%5Futp%5Fedu%5Fpe%2FDocuments%2FIntegrador&ga=1)
 
 ## Requerimientos
 ### Funcionales
