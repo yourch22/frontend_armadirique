@@ -40,7 +40,7 @@ Enlace a la [Documentacion.](https://utpedupe-my.sharepoint.com/personal/u243234
 ## Tablas
 
 ### Word Breakdown Structure
-![diagrama](https://drive.google.com/uc?export=view&id=1POr9GSHDVNIbdG4XU7atQmWobpzaA9-v)
+![diagrama](https://drive.google.com/uc?export=view&id=1mph9BhPO4LPH-pADeSgUbwQ7k7IHLz-i)
 ### Diagrama de Procesos original del negocio
 ![diagrama](https://drive.google.com/uc?export=view&id=1LoXiRGsl9BSzlNe8g-mpFAsW6l53UEeI)
 ### Diagrama de Procesos con el sistema implementado
@@ -60,8 +60,9 @@ Enlace a la [Documentacion.](https://utpedupe-my.sharepoint.com/personal/u243234
 ![Compra](https://drive.google.com/uc?export=view&id=1Rr2_D_n1NI28GLwWQsHLPg818m43uvSW)
 
 ## Tecnologias utilizadas
+- Java 17
+- Spring Boot
+- Spring Data JPA
+- Spring Security
+- MySQL
 - React
-- Vite 
-- Tailwind CSS
-- Axios
-- React Router DOM
