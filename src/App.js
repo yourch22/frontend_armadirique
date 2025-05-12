@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './componentes/Login/Login';
 import Registrar from './componentes/Registrar/Registrar';
 import Dashboard from './componentes/Dashboard/Dashboard';
+import DashboardAdmin from './componentes/Admin/Dashboardadmin';
+import DashboardCliente from './componentes/Client/DashboardCliente';
 import './App.css';
 
 import { ToastContainer } from 'react-toastify';
@@ -15,6 +17,8 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/registrar" element={<Registrar />} />
+            <Route path="/dashboardadmin" element={<DashboardAdmin />} />
+            <Route path="/dashboardcliente" element={<DashboardCliente />} /> 
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>

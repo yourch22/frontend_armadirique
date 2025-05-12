@@ -73,10 +73,31 @@ const Login = () => {
   
       const data = await response.json();
       localStorage.setItem('token', data.token);
+
+  // Obtener usuario actual
+    const userResponse = await fetch('http://localhost:8080/actual-usuario', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${data.token}`,
+      },
+    });
+
+    if (!userResponse.ok) {
+      throw new Error('No se pudo obtener el usuario actual.');
+    }
+
+    const user = await userResponse.json();
+    const rol = user.authorities[0].authority;
+
       setSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
       
       setTimeout(() => {
-        navigate('/dashboard');
+          if (rol === 'ADMIN') {
+        navigate('/dashboardadmin');
+      } else {
+        navigate('/dashboardcliente');
+      }
+       // navigate('/dashboard');
       }, 2000);
   
     } catch (error) {
@@ -189,7 +210,7 @@ const Login = () => {
 
                 <Form onSubmit={handleSubmit}>
                   <Form.Group style={{ marginBottom: '1rem' }}>
-                    <Form.Label>Correo electrónico</Form.Label>
+                    <Form.Label>Usuario</Form.Label>
                     <Form.Control
                       type="text"
                       name="email"

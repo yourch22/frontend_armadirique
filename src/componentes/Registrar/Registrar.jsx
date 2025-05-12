@@ -83,7 +83,7 @@ const handleSubmit = async (e) => {
     username: formData.nombre,
     password: formData.password,
     nombre: formData.nombre,
-    apellidos: formData.apellidos,
+    apellidos: formData.apellido,
     direccion: formData.direccion,
     ciudad: "Lima", // Puedes cambiar esto según tu lógica
     telefono: `${formData.countryCode}${formData.telefono}`,
