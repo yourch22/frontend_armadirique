@@ -55,7 +55,7 @@ const Login = () => {
     setSuccessMessage('');
   
     try {
-      const response = await fetch('http://localhost:8080/auth/login', {
+      const response = await fetch('http://localhost:8080/generate-token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -191,7 +191,7 @@ const Login = () => {
                   <Form.Group style={{ marginBottom: '1rem' }}>
                     <Form.Label>Correo electrónico</Form.Label>
                     <Form.Control
-                      type="email"
+                      type="text"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}

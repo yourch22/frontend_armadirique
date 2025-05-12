@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify'; //libreria para notificaciones
+
 import { 
   Container, 
   Form, 
@@ -60,22 +62,55 @@ const Registrar = () => {
     setFormData(prev => ({ ...prev, fechaNacimiento: date }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (formData.password !== formData.confirmPassword) {
-      setErrorMessage('Las contraseñas no coinciden');
-      return;
-    }
-    
-    if (!formData.fechaNacimiento) {
-      setErrorMessage('Ingrese su fecha de nacimiento');
-      return;
-    }
-    
-    console.log('Datos registrados:', formData);
-    navigate('/login');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (formData.password !== formData.confirmPassword) {
+    setErrorMessage("Las contraseñas no coinciden.");
+    toast.error("Las contraseñas no coinciden");
+    return;
+  }
+  const usuario = {
+    username: formData.nombre,
+    password: formData.password,
+    nombre: formData.nombre,
+    apellidos: formData.apellidos,
+    direccion: formData.direccion,
+    ciudad: "Lima", // Puedes cambiar esto según tu lógica
+    telefono: `${formData.countryCode}${formData.telefono}`,
+    email: formData.email,
+    estado: true, // Cambia esto según tu lógica
+    //fechaNacimiento: formData.fechaNacimiento,
+    perfil: "foto.png",
   };
+console.log(usuario);
+  try {
+    const response = await fetch("http://localhost:8080/usuarios/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(usuario),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      setErrorMessage(errorData?.message || "Error al registrar usuario.");
+      console.error("Error en el registro:", errorData);
+      // Error
+      toast.error('Ocurrió un error');
+      return;
+    }
+
+    const data = await response.json();
+    // alerta de éxito
+     toast.success('Usuario registrado con éxito');
+    navigate("/login");
+  } catch (error) {
+    console.error("Error de red:", error);
+    setErrorMessage("Error de red al registrar usuario.");
+  }
+};
 
   return (
     <div style={{
