@@ -19,7 +19,8 @@ import {
   FaUser,
   FaPhone,
   FaMapMarkerAlt,
-  FaCalendarAlt
+  FaCalendarAlt,
+  FaImage
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
@@ -39,15 +40,19 @@ const countryCodes = [
 
 const Registrar = () => {
   const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    confirmPassword: '',
     nombre: '',
-    apellidos: '',
-    email: '',
+    apellido: '',
+    direccion: '',
+    ciudad: '',
     countryCode: '+51',
     telefono: '',
-    direccion: '',
-    fechaNacimiento: null,
-    password: '',
-    confirmPassword: ''
+    email: '',
+    estado: true,
+    perfil: null,
+    fechaNacimiento: null
   });
   
   const [errorMessage, setErrorMessage] = useState('');
@@ -56,6 +61,10 @@ const Registrar = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    setFormData(prev => ({ ...prev, perfil: e.target.files[0] }));
   };
 
   const handleDateChange = (date) => {
@@ -115,54 +124,48 @@ console.log(usuario);
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: 'rgba(235, 224, 224, 0.49)', /*CAMBIAR COLOR FONDO*/
+      backgroundColor: 'rgba(235, 224, 224, 0.49)',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundAttachment: 'fixed',
     }}>
       {/* Header personalizable */}
-<Navbar 
-  expand="lg" 
-  className="shadow-sm"
-  style={{ 
-    backgroundColor: '#f8f9fa', // Puedes cambiar este color
-    padding: '15px 0'
-  }}
->
-  <Container>
-  <Button 
-  variant="link" 
-  onClick={() => navigate(-1)}
-  className="text-dark text-decoration-none"
-  style={{ 
-    fontWeight: '500',
-    marginleft: '-50px' // Ajusta este valor según cuánto quieras moverlo
-  }}
->
-<FaArrowLeft className="me-2" /> Volver
-</Button>
-    
+      <Navbar 
+        expand="lg" 
+        className="shadow-sm"
+        style={{ 
+          backgroundColor: '#f8f9fa',
+          padding: '15px 0'
+        }}
+      >
+        <Container>
+          <Button 
+            variant="link" 
+            onClick={() => navigate(-1)}
+            className="text-dark text-decoration-none"
+            style={{ 
+              fontWeight: '500',
+              marginLeft: '-50px'
+            }}
+          >
+            <FaArrowLeft className="me-2" /> Volver
+          </Button>
 
-
-
-
-
-    <Navbar.Brand 
-      className="mx-auto" // Centra el texto
-      style={{ 
-        fontSize: '1.8rem', // Tamaño más grande
-        fontWeight: '700',
-        color: '#333', // Color del texto
-        letterSpacing: '1px'
-      }}
-    >
-      ARMADIRIQUE
-    </Navbar.Brand>
-    
-    {/* Espacio para balancear el diseño */}
-    <div style={{ width: '160px' }}></div>
-  </Container>
-</Navbar>
+          <Navbar.Brand 
+            className="mx-auto"
+            style={{ 
+              fontSize: '1.8rem',
+              fontWeight: '700',
+              color: '#333',
+              letterSpacing: '1px'
+            }}
+          >
+            ARMADIRIQUE
+          </Navbar.Brand>
+          
+          <div style={{ width: '160px' }}></div>
+        </Container>
+      </Navbar>
 
       {/* Formulario */}
       <Container className="py-5">
@@ -188,7 +191,7 @@ console.log(usuario);
                       <Form.Group className="mb-3">
                         <Form.Label className="text-dark">
                           <FaUser className="me-2 text-primary" />
-                          Nombre(s)
+                          Nombre
                         </Form.Label>
                         <Form.Control
                           name="nombre"
@@ -201,17 +204,30 @@ console.log(usuario);
                     <Col md={6}>
                       <Form.Group className="mb-3">
                         <Form.Label className="text-dark">
-                          Apellidos
+                          Apellido
                         </Form.Label>
                         <Form.Control
-                          name="apellidos"
-                          value={formData.apellidos}
+                          name="apellido"
+                          value={formData.apellido}
                           onChange={handleChange}
                           required
                         />
                       </Form.Group>
                     </Col>
                   </Row>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label className="text-dark">
+                      <FaUser className="me-2 text-primary" />
+                      Nombre de usuario
+                    </Form.Label>
+                    <Form.Control
+                      name="username"
+                      value={formData.username}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
 
                   <Form.Group className="mb-3">
                     <Form.Label className="text-dark">
@@ -258,12 +274,26 @@ console.log(usuario);
                   <Form.Group className="mb-3">
                     <Form.Label className="text-dark">
                       <FaMapMarkerAlt className="me-2 text-primary" />
-                      Dirección (opcional)
+                      Dirección
                     </Form.Label>
                     <Form.Control
                       name="direccion"
                       value={formData.direccion}
                       onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label className="text-dark">
+                      <FaMapMarkerAlt className="me-2 text-primary" />
+                      Ciudad
+                    </Form.Label>
+                    <Form.Control
+                      name="ciudad"
+                      value={formData.ciudad}
+                      onChange={handleChange}
+                      required
                     />
                   </Form.Group>
 
@@ -279,6 +309,18 @@ console.log(usuario);
                       placeholderText="Seleccionar fecha"
                       className="form-control"
                       required
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label className="text-dark">
+                      <FaImage className="me-2 text-primary" />
+                      Foto de perfil
+                    </Form.Label>
+                    <Form.Control
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
                     />
                   </Form.Group>
 
