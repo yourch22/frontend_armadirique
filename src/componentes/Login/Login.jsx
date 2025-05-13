@@ -130,7 +130,7 @@ const Login = () => {
           
           <Navbar.Collapse id="basic-navbar-nav" style={{ justifyContent: 'center' }}>
             <Nav style={{ margin: '0 auto' }}>
-              <Nav.Link href="#">Inicio</Nav.Link>
+              <Nav.Link href="/inicio">Inicio</Nav.Link>
               <Nav.Link href="/catalogo">Catálogo</Nav.Link>
               <Nav.Link href="#">Contacto</Nav.Link>
               <Nav.Link href="#">Nosotros</Nav.Link>

@@ -27,12 +27,16 @@ import fondoLogo from './logo.png';
 import { left } from '@popperjs/core';
 
 const productos = [
-    { id: 1, nombre: 'Mueble Madera', descripcion: 'Descripción A',precio:'s/ 800.00'},
-    { id: 2, nombre: 'Sillon Rojo ', descripcion: 'Descripción A',precio:'s/ 600.00'},
-    { id: 3, nombre: 'Cama Madera', descripcion: 'Descripción A',precio:'s/ 1000.00'},
-    { id: 4, nombre: 'Silla Madera', descripcion: 'Descripción A',precio:'s/ 1000.00'},
-    { id: 5, nombre: 'Cama para Bebes', descripcion: 'Descripción A',precio:'s/ 1000.00'},
-    // Agrega más productos si deseas
+    { id: 1, nombre: 'Silla Madera Azul', descripcion: 'Descripción A', precio: 's/ 800.00',url:'mueble1' },
+    { id: 2, nombre: 'Sillon Rojo', descripcion: 'Descripción A', precio: 's/ 600.00',url:'mueble2' },
+    { id: 3, nombre: 'Silla Blanca', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble3' },
+    { id: 4, nombre: 'Sofa Marron', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble4' },
+    { id: 5, nombre: 'Sillon Plomo', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble5' },
+    { id: 6, nombre: 'Silla Amoblada', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble6' },
+    { id: 7, nombre: 'Sofa Gris', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble7' },
+    { id: 8, nombre: 'Silla Verde Giratoria', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble8' },
+    { id: 9, nombre: 'Sofa Azul', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble9' },
+    { id: 10, nombre: 'Banco Madera', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble10' },
 ];
 
 
@@ -124,7 +128,7 @@ function Catalogo() {
                         display: 'flex',
                         //alignItems: 'center',
                         justifyContent: 'center',
-                        padding: '20px',
+                        paddingTop: '15vh',
                         boxSizing: 'border-box',
                         //alignItems:'center'
                         
@@ -158,7 +162,7 @@ function Catalogo() {
                     {/*Titulo*/}
                     <div style={{margin:'5px 0'}}>
                         <h6>Catalogo</h6>
-                        Resultados: #
+                        Resultados: {productos.length}
                     </div>
                     {/*Prodcutos*/}
                     {productos.map((prod) => (
@@ -180,7 +184,8 @@ function Catalogo() {
                                 {/*Imagen*/} 
                                 <div>
                                     <Link to="#"> 
-                                        <img src={fondoLogo} style={{width:'20vh'}}></img>
+                                        <img src={`./imgMuebles/mueble${prod.id}.jpg`}  alt={`mueble${prod.id}`} 
+                                        style={{width:'20vh',marginRight:'4vh'}}></img>
                                     </Link>  
                                 </div>
                                 {/*Nombre y descripcion*/}    

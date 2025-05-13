@@ -18,8 +18,9 @@ import {
     FaUser,
     FaSearch,
     FaShoppingCart,
-    FaFacebook,
-    FaGoogle,
+    FaInstagram, 
+    FaFacebookF, 
+    FaYoutube,
     FaTimes
 } from 'react-icons/fa';
 import slide1 from './slide1.jpg';
@@ -215,7 +216,8 @@ function Catalogo() {
                                 <img src={`./imgMuebles/mueble${prod.id}.jpg`}  alt={`mueble${prod.id}`} 
                                 style={{
                                     //border:'1px solid #c3c3c3', 
-                                    width:'90%'
+                                    //width:'90%',
+                                    height:'25vh'
                                     
                                 }}/>
                             </div>
@@ -237,18 +239,24 @@ function Catalogo() {
                 
             </div> 
 
-            <div style={{backgroundColor:'black',height:'300px',color:'white',display:'flex',padding:'10vh 5vh'}}>
+            <div style={{backgroundColor:'black',height:'300px',color:'white',display:'flex',alignItems:'center'}}>
                 
 
                 
-                <div style={{
-                    flex:4,
-                    fontWeight: 700,
-                    fontSize: '1.5rem',
-                }}>
-                    Armadirique
+                <div style={{flex:4,textAlign:'center'}}>
+
+                    <div style={{fontWeight: 700,fontSize: '1.5rem',marginBottom:'1.5rem'}}>
+                        Armadirique
+                    </div>
+                    Siguenos:
+                    <FaInstagram style={{ fontSize: '1.5rem', color: 'white', cursor: 'pointer', margin: '0 0.5rem' }} />
+                    <FaFacebookF style={{ fontSize: '1.5rem', color: 'white', cursor: 'pointer', margin: '0 0.5rem' }} />
+                    <FaYoutube style={{ fontSize: '1.5rem', color: 'white', cursor: 'pointer', margin: '0 0.5rem' }} />
+    
 
                 </div>
+
+
                 <div style={{flex:3}}>
                     <p><u>Servicio al cliente</u></p>
                     <p>Terminos y condiciones</p>
