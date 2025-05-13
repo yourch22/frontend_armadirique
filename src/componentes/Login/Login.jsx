@@ -65,12 +65,12 @@ const Login = () => {
           password: formData.password,
         }),
       });
-  
+      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Correo o contraseña incorrectos.');
       }
-  
+
       const data = await response.json();
       localStorage.setItem('token', data.token);
 
@@ -124,7 +124,7 @@ const Login = () => {
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
         zIndex: -1,
-        filter: 'brightness(0.8)'
+        filter: 'brightness(0.8)'   
       }} />
       
       {/* Header/Navbar */}
@@ -152,7 +152,7 @@ const Login = () => {
           <Navbar.Collapse id="basic-navbar-nav" style={{ justifyContent: 'center' }}>
             <Nav style={{ margin: '0 auto' }}>
               <Nav.Link href="#">Inicio</Nav.Link>
-              <Nav.Link href="#">Catálogo</Nav.Link>
+              <Nav.Link href="/catalogo">Catálogo</Nav.Link>
               <Nav.Link href="#">Contacto</Nav.Link>
               <Nav.Link href="#">Nosotros</Nav.Link>
             </Nav>
