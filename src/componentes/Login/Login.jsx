@@ -49,32 +49,34 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
-  
-    try {
-      const response = await fetch('http://localhost:8080/generate-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.email,
-          password: formData.password,
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Correo o contraseña incorrectos.');
-      }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setErrorMessage('');
+  setSuccessMessage('');
 
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
+  try {
+    const response = await fetch('http://localhost:8080/generate-token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: formData.email,
+        password: formData.password,
+      }),
+    });
 
-  // Obtener usuario actual
+    if (!response.ok) {
+      // Intenta leer el mensaje del error que viene en formato JSON
+      const errorData = await response.json().catch(() => null);
+      const message = errorData?.message || 'Usuario o contraseña incorrectos.';
+      throw new Error(message);
+    }
+
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+
+    // Obtener usuario actual
     const userResponse = await fetch('http://localhost:8080/actual-usuario', {
       method: 'GET',
       headers: {
@@ -89,22 +91,21 @@ const Login = () => {
     const user = await userResponse.json();
     const rol = user.authorities[0].authority;
 
-      setSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
-      
-      setTimeout(() => {
-          if (rol === 'ADMIN') {
+    setSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
+
+    setTimeout(() => {
+      if (rol === 'ADMIN') {
         navigate('/dashboardadmin');
       } else {
         navigate('/dashboardcliente');
       }
-       // navigate('/dashboard');
-      }, 2000);
-  
-    } catch (error) {
-      console.error('Error en login:', error);
-      setErrorMessage(error.message || 'Error al iniciar sesión.');
-    }
-  };
+    }, 2000);
+  } catch (error) {
+    console.error('Error en login:', error);
+    setErrorMessage(error.message || 'Error al iniciar sesión.');
+  }
+};
+
 
   return (
     <div style={{
