@@ -23,8 +23,8 @@ import {
   FaImage
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+// import DatePicker from 'react-datepicker';
+// import 'react-datepicker/dist/react-datepicker.css';
 
 // Lista de países con prefijos
 const countryCodes = [
@@ -297,7 +297,7 @@ console.log(usuario);
                     />
                   </Form.Group>
 
-                  <Form.Group className="mb-3">
+                  {/* <Form.Group className="mb-3">
                     <Form.Label className="text-dark">
                       <FaCalendarAlt className="me-2 text-primary" />
                       Fecha de nacimiento
@@ -310,7 +310,7 @@ console.log(usuario);
                       className="form-control"
                       required
                     />
-                  </Form.Group>
+                  </Form.Group> */}
 
                   <Form.Group className="mb-3">
                     <Form.Label className="text-dark">
