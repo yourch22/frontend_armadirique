@@ -94,7 +94,11 @@ const handleSubmit = async (e) => {
   };
 console.log(usuario);
   try {
+<<<<<<< HEAD
     const response = await fetch("http://localhost:8080/usuarios/", {
+=======
+    const response = await fetch("http://localhost:8080/api/v1/usuarios/", {
+>>>>>>> origin/main
       method: "POST",
       headers: {
         "Content-Type": "application/json",
