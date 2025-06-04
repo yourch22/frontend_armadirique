@@ -49,33 +49,35 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
-  
-    try {
-      const response = await fetch('http://localhost:8080/generate-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.email,
-          password: formData.password,
-        }),
-      });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Correo o contraseña incorrectos.');
-      }
-  
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setErrorMessage('');
+  setSuccessMessage('');
 
-  // Obtener usuario actual
-    const userResponse = await fetch('http://localhost:8080/actual-usuario', {
+  try {
+    const response = await fetch('http://localhost:8080/api/v1/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: formData.email,
+        password: formData.password,
+      }),
+    });
+
+    if (!response.ok) {
+      // Intenta leer el mensaje del error que viene en formato JSON
+      const errorData = await response.json().catch(() => null);
+      const message = errorData?.message || 'Usuario o contraseña incorrectos.';
+      throw new Error(message);
+    }
+
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+
+    // Obtener usuario actual
+    const userResponse = await fetch('http://localhost:8080/api/v1/auth/actual-usuario', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${data.token}`,
@@ -89,22 +91,21 @@ const Login = () => {
     const user = await userResponse.json();
     const rol = user.authorities[0].authority;
 
-      setSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
-      
-      setTimeout(() => {
-          if (rol === 'ADMIN') {
+    setSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
+
+    setTimeout(() => {
+      if (rol === 'ADMIN') {
         navigate('/dashboardadmin');
       } else {
         navigate('/dashboardcliente');
       }
-       // navigate('/dashboard');
-      }, 2000);
-  
-    } catch (error) {
-      console.error('Error en login:', error);
-      setErrorMessage(error.message || 'Error al iniciar sesión.');
-    }
-  };
+    }, 2000);
+  } catch (error) {
+    console.error('Error en login:', error);
+    setErrorMessage(error.message || 'Error al iniciar sesión.');
+  }
+};
+
 
   return (
     <div style={{
@@ -124,7 +125,7 @@ const Login = () => {
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
         zIndex: -1,
-        filter: 'brightness(0.8)'
+        filter: 'brightness(0.8)'   
       }} />
       
       {/* Header/Navbar */}
@@ -152,7 +153,7 @@ const Login = () => {
           <Navbar.Collapse id="basic-navbar-nav" style={{ justifyContent: 'center' }}>
             <Nav style={{ margin: '0 auto' }}>
               <Nav.Link href="#">Inicio</Nav.Link>
-              <Nav.Link href="#">Catálogo</Nav.Link>
+              <Nav.Link href="/catalogo">Catálogo</Nav.Link>
               <Nav.Link href="#">Contacto</Nav.Link>
               <Nav.Link href="#">Nosotros</Nav.Link>
             </Nav>

@@ -1,89 +1,68 @@
-# Frontend - Armadirique
+# Sistema de ventas y almacén para mueblería “ARMADIRIQUE” 
+![Titulo](https://drive.google.com/uc?export=view&id=1zIjadRWUevYw5YJNmthCoOJihvemb6Fc)
 
-Este es el frontend del sistema web para la mueblería Armadirique, desarrollado con **React**.
+Aplicativo web para la mueblería ARMADIRIQUE que permite gestionar de manera eficiente los pedidos en línea, ofreciendo a los clientes la posibilidad de interactuar entre los diversos productos y sus variedades y realizar pagos seguros.
 
-## ⚙️ Tecnologías
+Enlace a la [Documentacion.](https://utpedupe-my.sharepoint.com/personal/u24323440_utp_edu_pe/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fu24323440%5Futp%5Fedu%5Fpe%2FDocuments%2FIntegrador&ga=1)
+
+## Requerimientos
+### Funcionales
+
+- El sistema deberá permitir a los clientes registrarse mediante un formulario con validación de datos y acceder utilizando credenciales seguras (correo electrónico y contraseña). 
+
+- El sistema deberá permitir a los clientes realizar pedidos personalizados, incluyendo la selección de modelo, color, dimensiones y materiales del mueble. 
+
+- El sistema deberá permitir al administrador de ventas visualizar, actualizar el estado y gestionar el historial de todos los pedidos registrados por los clientes. 
+
+- El sistema permite la gestión de inventario 
+
+- El sistema permite al cliente realizar pagos en línea seguras 
+
+- El sistema permite al administrador gestionar todos los módulos 
+
+- El sistema permite al administrador gestión productos 
+
+### No funcionales
+- La aplicación web debe tener una interfaz intuitiva y fácil de usar 
+
+- La aplicación debe tener un diseño responsivo
+
+- La aplicación web debe tener buen rendimiento 
+
+- La aplicación web debe tener conexión a base de datos 
+
+- La aplicación web debe soportar alto tráfico de usuarios 
+
+- La aplicación web debe estar disponible 24/7 
+
+- La aplicación web debe tener control de versiones 
+
+## Tablas
+
+### Word Breakdown Structure
+![diagrama](https://drive.google.com/uc?export=view&id=1mph9BhPO4LPH-pADeSgUbwQ7k7IHLz-i)
+### Diagrama de Procesos original del negocio
+![diagrama](https://drive.google.com/uc?export=view&id=1LoXiRGsl9BSzlNe8g-mpFAsW6l53UEeI)
+### Diagrama de Procesos con el sistema implementado
+![diagrama](https://drive.google.com/uc?export=view&id=1llOXuGfkoCOx_dSuw61deKc2NKkNeUxO)
+### Diagrama entidad relacion
+![diagrama](https://drive.google.com/uc?export=view&id=17A0J0_WxaoFUi6ov_7pKaER09N7LvXht)
+
+## Capturas
+> Login
+
+![Login](https://drive.google.com/uc?export=view&id=1L6yFle0jBdz20cmyaAHwt9pi3kxBmlNa)
+> Catalogo
+
+![Catalogo](https://drive.google.com/uc?export=view&id=1iadMhbN1MUAkXaUP7OLN3PmXS_W3eLsy)
+> Compra
+
+![Compra](https://drive.google.com/uc?export=view&id=1Rr2_D_n1NI28GLwWQsHLPg818m43uvSW)
+
+## Tecnologias utilizadas
+- Java 17
+- Spring Boot
+- Spring Data JPA
+- Spring Security
+- MySQL
 - React
-- Vite (o Create React App, según tu caso)
-- Tailwind CSS
-- Axios
-- React Router DOM
-
-## ▶️ Cómo ejecutar
-
-Instala dependencias y ejecuta:
-
-```bash
-npm install
-npm run dev
-
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
