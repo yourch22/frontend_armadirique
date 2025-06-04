@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from 'react';
-
-const DashboardAdmin = () => {
-  const [usuario, setUsuario] = useState(null);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      window.location.href = '/login';
-=======
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Swal from 'sweetalert2';
@@ -23,44 +11,11 @@ const DashboardAdmin = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       window.location.href = "/login";
->>>>>>> origin/main
       return;
     }
 
     const fetchUsuario = async () => {
       try {
-<<<<<<< HEAD
-        const response = await fetch('http://localhost:8080/actual-usuario', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error('No se pudo obtener el usuario');
-        }
-
-        const data = await response.json();
-        setUsuario(data);
-
-        // Aquí podrías usar data.authorities[0].authority si necesitas el rol
-        console.log('Usuario actual:', data); // ✅ Aquí lo ves en consola
-        console.log('Token:', token); // ✅ Aquí lo ves en consola
-         console.log('Rol:', data.authorities[0].authority); // ✅ Aquí lo ves en consola rol del usuario actual
-        const rol = data.authorities[0]?.authority;
-        console.log('ROL DEL USUARIO:', rol);
-
-        if (rol !== 'ADMIN') {
-          // Redirige si no es admin
-          window.location.href = '/dashboardcliente';
-        }
-
-      } catch (error) {
-        console.error(error);
-        setError('Error al obtener el usuario');
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-=======
         const response = await fetch("http://localhost:8080/api/v1/auth/actual-usuario", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -95,34 +50,10 @@ const DashboardAdmin = () => {
       } catch (error) {
         console.error(error);
         setError("Error al obtener los productos");
->>>>>>> origin/main
       }
     };
 
     fetchUsuario();
-<<<<<<< HEAD
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.href = '/login';
-  };
-
-  return (
-    <div style={{ textAlign: 'center', padding: '50px' }}>
-      <h1>Bienvenido al Dashboard Admin</h1>
-      {usuario ? (
-        <>
-          <p>Sesión iniciada como: <strong>{usuario.nombre} {usuario.apellidos}</strong></p>
-          <p>Rol: <strong>{usuario.authorities[0]?.authority}</strong></p>
-          <button onClick={handleLogout}>Cerrar sesión</button>
-        </>
-      ) : error ? (
-        <p>{error}</p>
-      ) : (
-        <p>Cargando datos del usuario...</p>
-      )}
-=======
     fetchProductos();
   }, []);
 
@@ -277,7 +208,6 @@ const DashboardAdmin = () => {
           </table>
         </div>
       </div>
->>>>>>> origin/main
     </div>
   );
 };

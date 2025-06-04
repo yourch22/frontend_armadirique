@@ -1,10 +1,4 @@
 import React, { useEffect, useState } from 'react';
-<<<<<<< HEAD
-
-const DashboardCliente = () => {
-  const [usuario, setUsuario] = useState(null);
-  const [error, setError] = useState('');
-=======
 import {
   Container, Navbar, Nav, Offcanvas
 } from 'react-bootstrap';
@@ -20,7 +14,6 @@ const DashboardCliente = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [isHovered, setIsHovered] = useState(null);
   const [isHoveredButton, setIsHoveredButton] = useState(null);
->>>>>>> origin/main
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -31,42 +24,23 @@ const DashboardCliente = () => {
 
     const fetchUsuario = async () => {
       try {
-<<<<<<< HEAD
-        const response = await fetch('http://localhost:8080/actual-usuario', {
-=======
         const response = await fetch('http://localhost:8080/api/v1/auth/actual-usuario', {
->>>>>>> origin/main
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         });
 
-<<<<<<< HEAD
-        if (!response.ok) {
-          throw new Error('No se pudo obtener el usuario');
-        }
-=======
         if (!response.ok) throw new Error('No se pudo obtener el usuario');
->>>>>>> origin/main
 
         const data = await response.json();
         const rol = data.authorities[0]?.authority;
 
-<<<<<<< HEAD
-        // ✅ Si el usuario es ADMIN, lo redirigimos al dashboard admin
-=======
->>>>>>> origin/main
         if (rol === 'ADMIN') {
           window.location.href = '/dashboardadmin';
           return;
         }
 
         setUsuario(data);
-<<<<<<< HEAD
-        console.log('Usuario actual:', data);
-
-=======
->>>>>>> origin/main
       } catch (error) {
         console.error(error);
         setError('Error al obtener el usuario');
@@ -75,9 +49,6 @@ const DashboardCliente = () => {
       }
     };
 
-<<<<<<< HEAD
-    fetchUsuario();
-=======
     const fetchProductos = async () => {
       try {
         const response = await fetch('http://localhost:8080/api/v1/productos', {
@@ -99,7 +70,6 @@ const DashboardCliente = () => {
 
     fetchUsuario();
     fetchProductos();
->>>>>>> origin/main
   }, []);
 
   const handleLogout = () => {
@@ -108,21 +78,6 @@ const DashboardCliente = () => {
   };
 
   return (
-<<<<<<< HEAD
-    <div style={{ textAlign: 'center', padding: '50px' }}>
-      <h1>Bienvenido al Dashboard Cliente</h1>
-      {usuario ? (
-        <>
-          <p>Sesión iniciada como: <strong>{usuario.nombre} {usuario.apellidos}</strong></p>
-          <p>Rol: <strong>{usuario.authorities[0]?.authority}</strong></p>
-          <button onClick={handleLogout}>Cerrar sesión</button>
-        </>
-      ) : error ? (
-        <p>{error}</p>
-      ) : (
-        <p>Cargando datos del usuario...</p>
-      )}
-=======
     <div style={{ minHeight: '100vh', paddingTop: '60px', position: 'relative' }}>
       {/* Navbar */}
       <Navbar bg="light" expand="lg" fixed="top" style={{ boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
@@ -244,7 +199,6 @@ const DashboardCliente = () => {
           {/* Espacio adicional */}
         </div>
       </div>
->>>>>>> origin/main
     </div>
   );
 };
