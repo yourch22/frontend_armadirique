@@ -24,7 +24,7 @@ const DashboardCliente = () => {
 
     const fetchUsuario = async () => {
       try {
-        const response = await fetch('http://localhost:8080/actual-usuario', {
+        const response = await fetch('http://localhost:8080/api/v1/auth/actual-usuario', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -51,7 +51,7 @@ const DashboardCliente = () => {
 
     const fetchProductos = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/productos', {
+        const response = await fetch('http://localhost:8080/api/v1/productos', {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'

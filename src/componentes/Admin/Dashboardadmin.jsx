@@ -16,7 +16,7 @@ const DashboardAdmin = () => {
 
     const fetchUsuario = async () => {
       try {
-        const response = await fetch("http://localhost:8080/actual-usuario", {
+        const response = await fetch("http://localhost:8080/api/v1/auth/actual-usuario", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -38,7 +38,7 @@ const DashboardAdmin = () => {
 
     const fetchProductos = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/productos", {
+        const response = await fetch("http://localhost:8080/api/v1/productos", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -76,7 +76,7 @@ const DashboardAdmin = () => {
         try {
           const token = localStorage.getItem("token");
           const response = await fetch(
-            `http://localhost:8080/api/productos/${id}`,
+            `http://localhost:8080/api/v1/productos/${id}`,
             {
               method: "DELETE",
               headers: {
