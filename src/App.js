@@ -8,6 +8,7 @@ import DashboardAdmin from './componentes/Admin/Dashboardadmin';
 import DashboardCliente from './componentes/Client/DashboardCliente';
 import Catalogo from './componentes/Catalogo/Catalogo';
 import Inicio from './componentes/Inicio/Inicio';
+import Contacto from './componentes/Contacto/Contacto'
 
 
 import './App.css';
@@ -27,8 +28,9 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/catalogo" element={<Catalogo />} />
           <Route path="/inicio" element={<Inicio />} />
+          <Route path="/contacto" element={<Contacto />} />
   
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/inicio" />} />
         </Routes>
       </Router>
 
