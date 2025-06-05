@@ -5,6 +5,7 @@ import Registrar from './componentes/Registrar/Registrar'; // Asegúrate de crea
 import Dashboard from './componentes/Dashboard/Dashboard';
 import Catalogo from './componentes/Catalogo/Catalogo';
 import Inicio from './componentes/Inicio/Inicio';
+import Vista from './componentes/Vista/Vista';
 import './App.css';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/inicio" element={<Inicio />} />
+        <Route path="/vista" element={<Vista />} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
