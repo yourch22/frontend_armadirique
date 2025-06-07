@@ -49,41 +49,63 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage('');
-    setSuccessMessage('');
-  
-    try {
-      const response = await fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.email,
-          password: formData.password,
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Correo o contraseña incorrectos.');
-      }
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setErrorMessage('');
+  setSuccessMessage('');
 
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      setSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
-      
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 2000);
-  
-    } catch (error) {
-      console.error('Error en login:', error);
-      setErrorMessage(error.message || 'Error al iniciar sesión.');
+  try {
+    const response = await fetch('http://localhost:8080/api/v1/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: formData.email,
+        password: formData.password,
+      }),
+    });
+
+    if (!response.ok) {
+      // Intenta leer el mensaje del error que viene en formato JSON
+      const errorData = await response.json().catch(() => null);
+      const message = errorData?.message || 'Usuario o contraseña incorrectos.';
+      throw new Error(message);
     }
-  };
+
+    const data = await response.json();
+    localStorage.setItem('token', data.token);
+
+    // Obtener usuario actual
+    const userResponse = await fetch('http://localhost:8080/api/v1/auth/actual-usuario', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${data.token}`,
+      },
+    });
+
+    if (!userResponse.ok) {
+      throw new Error('No se pudo obtener el usuario actual.');
+    }
+
+    const user = await userResponse.json();
+    const rol = user.authorities[0].authority;
+
+    setSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
+
+    setTimeout(() => {
+      if (rol === 'ADMIN') {
+        navigate('/dashboardadmin');
+      } else {
+        navigate('/dashboardcliente');
+      }
+    }, 2000);
+  } catch (error) {
+    console.error('Error en login:', error);
+    setErrorMessage(error.message || 'Error al iniciar sesión.');
+  }
+};
+
 
   return (
     <div style={{
@@ -189,9 +211,9 @@ const Login = () => {
 
                 <Form onSubmit={handleSubmit}>
                   <Form.Group style={{ marginBottom: '1rem' }}>
-                    <Form.Label>Correo electrónico</Form.Label>
+                    <Form.Label>Usuario</Form.Label>
                     <Form.Control
-                      type="email"
+                      type="text"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
@@ -301,7 +323,7 @@ const Login = () => {
                     </a>
                   </div>
 
-                  <div style={{ textAlign: 'center' }}>
+                  {/* <div style={{ textAlign: 'center' }}>
                     <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1rem' }}>Ingresar con:</p>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                       <Button variant="outline-danger" style={{
@@ -319,7 +341,7 @@ const Login = () => {
                         <FaFacebook style={{ marginRight: '0.5rem' }} /> Facebook
                       </Button>
                     </div>
-                  </div>
+                  </div> */}
                 </Form>
               </Card.Body>
             </Card>
