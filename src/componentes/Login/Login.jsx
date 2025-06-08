@@ -24,7 +24,7 @@ import {
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import fondoLogin from './mueble.png';
-
+/*  RUTA PAR ELEGIR LA IMAGEN */
 const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -326,7 +326,7 @@ const handleSubmit = async (e) => {
                   {/* <div style={{ textAlign: 'center' }}>
                     <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1rem' }}>Ingresar con:</p>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <Button variant="outline-danger" style={{
+                     {/*  <Button variant="outline-danger" style={{
                         padding: '8px 15px',
                         fontSize: '0.9rem',
                         borderRadius: '5px'
@@ -339,7 +339,7 @@ const handleSubmit = async (e) => {
                         borderRadius: '5px'
                       }}>
                         <FaFacebook style={{ marginRight: '0.5rem' }} /> Facebook
-                      </Button>
+                      </Button> */}
                     </div>
                   </div> */}
                 </Form>
