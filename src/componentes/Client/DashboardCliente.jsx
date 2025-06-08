@@ -156,6 +156,7 @@ const DashboardCliente = () => {
               alignItems: 'center',
               transition: '0.3s ease',
             }}>
+
               <div>
                <Link to="#">
              <img
@@ -165,6 +166,7 @@ const DashboardCliente = () => {
                />
                </Link>
               </div>
+              
               <div style={{ flex: 1, marginLeft: '15px' }}>
                 <Link to="#" style={{
                   textDecoration: 'none',
