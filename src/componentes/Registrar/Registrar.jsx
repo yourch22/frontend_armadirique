@@ -312,7 +312,7 @@ console.log(usuario);
                     />
                   </Form.Group> */}
 
-                  <Form.Group className="mb-3">
+                  {/*<Form.Group className="mb-3">
                     <Form.Label className="text-dark">
                       <FaImage className="me-2 text-primary" />
                       Foto de perfil
@@ -322,7 +322,7 @@ console.log(usuario);
                       accept="image/*"
                       onChange={handleFileChange}
                     />
-                  </Form.Group>
+                  </Form.Group>*/}
 
                   <Row>
                     <Col md={6}>
