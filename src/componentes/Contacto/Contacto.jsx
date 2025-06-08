@@ -1,5 +1,6 @@
 import { useState } from "react"
 import NavbarCliente from "../Cabeceras/NavbarCliente"
+import PieDePagina from '../Cabeceras/PieDePagina'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function Contacto() {
@@ -27,7 +28,7 @@ function Contacto() {
   return (
     <div style={{
             minHeight: '100vh',
-            paddingTop: '80px',
+            paddingTop: '60px',
             position: 'relative'
         }}><NavbarCliente/>
 
@@ -206,14 +207,18 @@ function Contacto() {
                     <i className="bi bi-whatsapp me-2"></i>
                     WhatsApp
                   </button>
+                  
                 </div>
+                <br/>
               </div>
             </div>
           </div>
         </div>
       </div>
+      
     </div>
- 
+    
+ <PieDePagina/>   
     </div>
   )
 }

@@ -158,7 +158,7 @@ const handleSubmit = async (e) => {
                     letterSpacing: '1px'
                   }}
                 >
-                  ARMADIRIQUE
+                  <Nav.Link href='/inicio'>ARMADIRIQUE</Nav.Link>
                 </Navbar.Brand>
                 
                 <div style={{ width: '160px' }}></div>

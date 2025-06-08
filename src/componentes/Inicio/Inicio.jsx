@@ -1,6 +1,7 @@
 // Importaciones necesarias
 import React, { useState } from 'react';
 import NavbarCliente from "../Cabeceras/NavbarCliente"
+import PieDePagina from '../Cabeceras/PieDePagina'
 import {
     Container,
     Form,
@@ -183,37 +184,12 @@ function Catalogo() {
                 
             </div> 
 
-            <div style={{backgroundColor:'black',height:'300px',color:'white',display:'flex',padding:'10vh 5vh'}}>
-                
-
-                
-                <div style={{
-                    flex:4,
-                    fontWeight: 700,
-                    fontSize: '1.5rem',
-                }}>
-                    Armadirique
-
-                </div>
-                <div style={{flex:3}}>
-                    <p><u>Servicio al cliente</u></p>
-                    <p>Terminos y condiciones</p>
-                    <p>Contacto</p>
-                    <p>Comprobante electronico</p>
-                </div>
-                <div style={{flex:3}}>
-                    <p><u>Acerca de:</u></p>
-                    <p>Sobre nosotros</p>
-                    <p>Proceso de diseno</p>
-                    <p>Estudio</p>
-                </div>
-                
-            </div>       
+            <PieDePagina/>     
 
         </div>
 
     );
 }
 
-// Exportación del componente
+
 export default Catalogo;

@@ -1,6 +1,7 @@
 // Importaciones necesarias
 import React, { useState } from "react";
 import NavbarCliente from "../Cabeceras/NavbarCliente"
+import PieDePagina from '../Cabeceras/PieDePagina'
 import {
   Container,
   Form,
@@ -218,6 +219,7 @@ function Catalogo() {
           Barra Derecha
         </div>
       </div>
+      <PieDePagina/>   
     </div>
   );
 }
