@@ -323,7 +323,7 @@ const handleSubmit = async (e) => {
                     </a>
                   </div>
 
-                  {/* <div style={{ textAlign: 'center' }}>
+                   <div style={{ textAlign: 'center' }}>
                     <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1rem' }}>Ingresar con:</p>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                      {/*  <Button variant="outline-danger" style={{
@@ -341,7 +341,7 @@ const handleSubmit = async (e) => {
                         <FaFacebook style={{ marginRight: '0.5rem' }} /> Facebook
                       </Button> */}
                     </div>
-                  </div> */}
+                  </div>
                 </Form>
               </Card.Body>
             </Card>
