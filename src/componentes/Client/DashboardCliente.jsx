@@ -157,7 +157,11 @@ const DashboardCliente = () => {
             }}>
               <div>
                 <Link to="#">
-                  <img src={fondoLogo} alt={prod.nombre} style={{ width: '20vh' }} />
+                  <img
+                      src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`} // ¡Añade /api/v1!
+                      alt={prod.nombre}
+                      style={{ width: '20vh' }}
+                  />
                 </Link>
               </div>
               <div style={{ flex: 1, marginLeft: '15px' }}>
