@@ -1,5 +1,7 @@
 // Importaciones necesarias
 import React, { useEffect, useState } from 'react';
+import NavbarCliente from "../Cabeceras/NavbarCliente";
+import PieDePagina from '../Cabeceras/PieDePagina';
 import {
     Container,
     Form,
@@ -42,6 +44,7 @@ function Catalogo() {
     const [productos, setProductos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
     const [index, setIndex] = useState(0);
 
     const prevSlide = () => {
@@ -73,73 +76,18 @@ function Catalogo() {
 
 
     return (
+        
         <div style={{
             minHeight: '100vh',
-            paddingTop: '60px',
+            paddingTop: '80px',
             position: 'relative'
         }}>
 
-            {/* Header/Navbar */}
-            <Navbar bg="light" expand="lg" style={{
-                backgroundColor: '#fff !important',
-                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                position: 'fixed',
-                top: 0,
-                width: '100%',
-                zIndex: 1000
-            }}>
-                <Container fluid>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <FaBars
-                            style={{ fontSize: '1.5rem', cursor: 'pointer', color: '#333', marginRight: '1rem' }}
-                            onClick={() => setShowSidebar(true)}
-                        />
-                        <Navbar.Brand href="#" style={{
-                            fontWeight: 700,
-                            fontSize: '1.5rem',
-                            color: '#333'
-                        }}>Armadirique</Navbar.Brand>
-                    </div>
-
-                    <Navbar.Collapse id="basic-navbar-nav" style={{ justifyContent: 'center' }}>
-                        <Nav style={{ margin: '0 auto' }}>
-                            <Nav.Link href="/Inicio">Inicio</Nav.Link>
-                            <Nav.Link href="/catalogo">Catálogo</Nav.Link>
-                            <Nav.Link href="#">Contacto</Nav.Link>
-                            <Nav.Link href="#">Nosotros</Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
-
-                    <div style={{ display: 'flex' }}>
-                        <FaSearch style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                        <FaShoppingCart style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                        <FaUser style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                    </div>
-                </Container>
-            </Navbar>
-            {/* Sidebar/Menú desplegable */}
-            <Offcanvas show={showSidebar} onHide={() => setShowSidebar(false)} placement="start" style={{ width: '250px' }}>
-                <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>
-                        <FaTimes
-                            style={{ fontSize: '1.5rem', cursor: 'pointer' }}
-                            onClick={() => setShowSidebar(false)}
-                        />
-                    </Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                    <Nav className="flex-column">
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Inicio</Nav.Link>
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Catálogo</Nav.Link>
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Contacto</Nav.Link>
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Nosotros</Nav.Link>
-                    </Nav>
-                </Offcanvas.Body>
-            </Offcanvas>
-
+<NavbarCliente/> 
             {/**********************************carroulsse******************************************************* */}
 
             <div style={{ position: 'relative', width: '100%',height:'400px',overflow: 'hidden'}}>
+                
                 <img
                     src={images[index]}
                     alt={`Slide ${index + 1}`}
@@ -235,31 +183,14 @@ function Catalogo() {
                     ))}
                 </div>
             </div> 
-            <div style={{backgroundColor:'black',height:'300px',color:'white',display:'flex',padding:'10vh 5vh'}}>
-                <div style={{
-                    flex:4,
-                    fontWeight: 700,
-                    fontSize: '1.5rem',
-                }}>
-                    Armadirique
-                </div>
-                <div style={{flex:3}}>
-                    <p><u>Servicio al cliente</u></p>
-                    <p>Terminos y condiciones</p>
-                    <p>Contacto</p>
-                    <p>Comprobante electronico</p>
-                </div>
-                <div style={{flex:3}}>
-                    <p><u>Acerca de:</u></p>
-                    <p>Sobre nosotros</p>
-                    <p>Proceso de diseno</p>
-                    <p>Estudio</p>
-                </div>
-            </div>       
+
+            <PieDePagina/>     
+
+
         </div>
 
     );
 }
 
-// Exportación del componente
+
 export default Catalogo;
