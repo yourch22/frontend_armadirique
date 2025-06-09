@@ -38,10 +38,30 @@ function Catalogo() {
   //const [showSidebar, setShowSidebar] = useState(false);
   const [isHovered, setIsHovered] = useState(null);
   const [isHoveredButton, setIsHoveredButton] = useState(null);
-  /*const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  };*/
+
+      const [productos, setProductos] = useState([]);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+       // useEffect para obtener los productos de la API
+    useEffect(() => {
+        const fetchProductos = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/productos`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setProductos(data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProductos();
+    }, []); 
   return (
     <div
       style={{
