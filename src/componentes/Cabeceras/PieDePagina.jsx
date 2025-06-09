@@ -4,9 +4,6 @@ function PieDePagina(){
     return(
         <div>
         <div style={{backgroundColor:'black',height:'300px',color:'white',display:'flex',padding:'10vh 5vh'}}>
-                
-
-                
                 <div style={{
                     flex:4,
                     fontWeight: 700,
