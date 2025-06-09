@@ -1,16 +1,9 @@
 // Importaciones necesarias
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Container,
-  Form,
-  Button,
-  Card,
-  Row,
-  Col,
-  Alert,
   Navbar,
   Nav,
-  FormCheck,
   Offcanvas,
   Dropdown,
 } from "react-bootstrap";
@@ -19,47 +12,12 @@ import {
   FaUser,
   FaSearch,
   FaShoppingCart,
-  FaFacebook,
-  FaGoogle,
   FaTimes,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import fondoLogo from "./logo.png";
-import { left } from "@popperjs/core";
 
-const productos = [
-  {
-    id: 1,
-    nombre: "Mueble Madera",
-    descripcion: "Descripción A",
-    precio: "s/ 800.00",
-  },
-  {
-    id: 2,
-    nombre: "Sillon Rojo ",
-    descripcion: "Descripción A",
-    precio: "s/ 600.00",
-  },
-  {
-    id: 3,
-    nombre: "Cama Madera",
-    descripcion: "Descripción A",
-    precio: "s/ 1000.00",
-  },
-  {
-    id: 4,
-    nombre: "Silla Madera",
-    descripcion: "Descripción A",
-    precio: "s/ 1000.00",
-  },
-  {
-    id: 5,
-    nombre: "Cama para Bebes",
-    descripcion: "Descripción A",
-    precio: "s/ 1000.00",
-  },
-  // Agrega más productos si deseas
-];
+
+
 
 // Definición del componente
 
@@ -71,6 +29,22 @@ function Catalogo() {
     localStorage.removeItem("token");
     window.location.href = "/login";
   };
+   //Cargar productos desde la api
+  const [productos, setProductos] = useState([]);
+  useEffect(() => {
+      fetch('http://localhost:8080/api/v1/productos')
+        .then(response => {
+          if (!response.ok) throw new Error('Error al obtener productos');
+          return response.json();
+        })
+        .then(data => {
+          setProductos(data); // Guardamos el array de productos en el estado
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }, []);
+
   return (
     <div
       style={{
@@ -242,7 +216,7 @@ function Catalogo() {
       <div
         style={{
           display: "flex",
-          alignItems: "stretch", // 🔑 esto es clave
+          alignItems: "stretch",
           minHeight: "100vh",
           backgroundColor: "#f3f3f3",
         }}
@@ -253,11 +227,9 @@ function Catalogo() {
             width: "15%",
             backgroundColor: "#ddd",
             display: "flex",
-            //alignItems: 'center',
             justifyContent: "center",
             padding: "20px",
             boxSizing: "border-box",
-            //alignItems:'center'
           }}
         >
           <div
@@ -286,7 +258,7 @@ function Catalogo() {
           {/*Titulo*/}
           <div style={{ margin: "5px 0" }}>
             <h6>Catalogo</h6>
-            Resultados: #
+            Resultados: {productos.length}
           </div>
           {/*Prodcutos*/}
           {productos.map((prod) => (
@@ -306,21 +278,19 @@ function Catalogo() {
             >
               {/*Imagen*/}
               <div>
-                <Link to="#">
-                  <img src={fondoLogo} style={{ width: "20vh" }}></img>
-                </Link>
+                
+                <img src={`./imgMuebles/${prod.imagenUrl}.jpg`} alt={prod.imagenUrl} style={{ width: "8rem" }}></img>
+                
               </div>
               {/*Nombre y descripcion*/}
-              <div style={{ flex: 1 }}>
-                <Link
-                  key={prod.id}
-                  to="#"
+              <div style={{ flex: 1, margin:"0rem 2rem" }}>
+                <Link to={`/vista/${prod.idProducto}`}
                   style={{
                     textDecoration: "none",
-                    color: isHovered === prod.id ? "#f7ad02" : "black", // Cambia el fondo cuando se pasa el mouse
+                    color: isHovered === prod.idProducto ? "#f7ad02" : "black", // Cambia el fondo cuando se pasa el mouse
                     transition: "0.1s", // Transición suave
                   }}
-                  onMouseEnter={() => setIsHovered(prod.id)}
+                  onMouseEnter={() => setIsHovered(prod.idProducto)}
                   onMouseLeave={() => setIsHovered(null)}
                 >
                   <h6>{prod.nombre}</h6>
@@ -336,20 +306,20 @@ function Catalogo() {
                   textAlign: "end",
                 }}
               >
-                <h6 style={{ marginBottom: "7vh" }}>{prod.precio}</h6>
+                <h5 style={{ marginBottom: "7vh",textAlign:"center" }}>S/.{prod.precio}</h5>
 
                 <button
-                  key={prod.id}
+
                   style={{
                     fontSize: "1.7vh",
-                    color: isHoveredButton == prod.id ? "black" : "white",
+                    color: isHoveredButton === prod.idProducto ? "black" : "white",
                     backgroundColor:
-                      isHoveredButton == prod.id ? "white" : "black",
+                      isHoveredButton === prod.idProducto ? "white" : "black",
                     transition: "0.2s",
                     borderRadius: "10px",
                     padding: "1vh",
                   }}
-                  onMouseEnter={() => setIsHoveredButton(prod.id)}
+                  onMouseEnter={() => setIsHoveredButton(prod.idProducto)}
                   onMouseLeave={() => setIsHoveredButton(null)}
                 >
                   Agregar al carrito

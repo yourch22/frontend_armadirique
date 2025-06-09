@@ -8,7 +8,8 @@ import DashboardAdmin from './componentes/Admin/Dashboardadmin';
 import DashboardCliente from './componentes/Client/DashboardCliente';
 import Catalogo from './componentes/Catalogo/Catalogo';
 import Inicio from './componentes/Inicio/Inicio';
-
+import Vista from './componentes/Vista/Vista';
+import Carrito from './componentes/Carrito/Carrito';
 
 import './App.css';
 
@@ -22,12 +23,14 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/registrar" element={<Registrar />} />
-           // <Route path="/dashboardadmin" element={<DashboardAdmin />} />
-            <Route path="/dashboardcliente" element={<DashboardCliente />} /> 
+          <Route path="/dashboardadmin" element={<DashboardAdmin />} />
+          <Route path="/dashboardcliente" element={<DashboardCliente />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/catalogo" element={<Catalogo />} />
           <Route path="/inicio" element={<Inicio />} />
-  
+          <Route path="/vista/:id" element={<Vista />} />
+          <Route path="/carrito" element={<Carrito />} />
+
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </Router>

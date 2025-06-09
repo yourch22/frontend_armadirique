@@ -1,5 +1,6 @@
 // Importaciones necesarias
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
+import { useParams } from "react-router-dom";
 import {
     Container,
 
@@ -16,13 +17,21 @@ import {
     FaTimes
 } from 'react-icons/fa';
 
-import fondoLogo from './logo.png';
-
 // Definición del componente
 
 function Vista() {
 
     const [showSidebar, setShowSidebar] = useState(false);
+
+    const {id} = useParams();
+    const [producto, setProducto] = useState([]);
+    useEffect(() => {
+        fetch(`http://localhost:8080/api/v1/productos/${id}`)
+        .then((res) => res.json())
+        .then((data) => setProducto(data));
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }, [id]);
+
 
     return (
         <div style={{
@@ -91,45 +100,53 @@ function Vista() {
 
             {/* main content*/}
             <main style={{
-                padding: '5rem'
+                padding: '4rem 8rem'
             }}>
-                    <div style={{ display: 'flex',height:'30rem'}}> 
-                        {/* thumbnails*/}
-                        <div style={{width:'10%',backgroundColor:'grey'}}></div>
+                    <div style={{ 
+                        display: 'flex',
+                        height:'35rem',
+                        padding:'1rem',
+                        //border:'1px solid black',
+                        boxShadow: 'inset 0 0 0 1px #c3c3c3',
+                        borderRadius:'1rem'
+                        }}> 
                         {/* imagen*/}
-                        <div style={{width:'45%'}}>
-                            <img src={fondoLogo} style={{width:'80%',objectFit:'cover'}}alt="" />
+                        <div style={{width:'50%',alignSelf:'center'}}>
+                            <img src={`/imgMuebles/${producto.imagenUrl}.jpg`} style={{height:'70%',objectFit:'cover'}}alt="" />
                         </div>
 
                         {/* info*/}
-                        <div style={{width:'45%',backgroundColor:'grey'}}>
+                        <div style={{width:'50%',margin:'0rem 2rem'}}>
                             {/* nombre*/}
-                            <div style={{margin:'1rem 1rem',fontWeight:'bold'}}>NOMBRE</div>
+                            <div style={{fontWeight:'bold',fontSize:'1.3rem',margin:'1rem 0rem'}}>
+                                {producto.nombre}
+                            </div>
                             <hr/>
                             {/* descripcion*/}
-                            <div style={{margin:'1rem 1rem'}}>
-                                <div style={{margin:'1rem 1rem',fontWeight:'bold'}}>Descripcion:</div>
-                                <div></div>
-                            </div>
-
-                            {/* dimensiones*/}
-                            <div style={{margin:'1rem 1rem'}}>
-                                <div style={{margin:'1rem 1rem',fontWeight:'bold'}}>Stock:</div>
-                                <div></div>
-                            </div>
-                            {/* precio*/}
-                            <div style={{margin:'1rem 1rem'}}>
-
-                            </div>
-                            {/* boton*/}
-                            <div style={{margin:'1rem 1rem'}}>
-                                <button style={{height:'3rem',width:'12rem'}}>ANADIR AL CARRITO</button>
+                            <div style={{margin:'2rem 0rem'}}>
+                                <div style={{fontWeight:'bold'}}>Descripcion:</div>
+                                <div style={{}}>{producto.descripcion}</div>
                             </div>
                             {/* estilos*/}
-                            <div style={{margin:'1rem 1rem'}}>
-                                <div style={{margin:'1rem 1rem',fontWeight:'bold'}}>Estilos:</div>
+                            <div style={{margin:'2rem 0rem'}}>
+                                <div style={{fontWeight:'bold'}}>Estilos:</div>
                                 <div></div>
+                            </div >
+                            {/* precio*/}
+                            <div style={{margin:'2rem 2rem',textAlign:'right'}}>
+                                <div style={{fontWeight:'bold',fontSize:'2rem'}}>S./{producto.precio}</div>
                             </div>
+                            {/* boton*/}
+                            <div style={{margin:'1rem 2rem',textAlign:'right'}}>
+                                <button style={{height:'3rem',width:'12rem'}}>ANADIR AL CARRITO</button>
+                            </div>
+                            {/* stock*/}
+                            <div>
+                                <div style={{fontWeight:'bold'}}>Stock: 
+                                    <span style={{fontWeight:'normal'}}> {producto.stock}</span>
+                                </div>
+                            </div>
+                            
                         </div>
 
                     </div>
