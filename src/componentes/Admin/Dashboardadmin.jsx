@@ -21,6 +21,15 @@ const DashboardAdmin = () => {
     idUsuario: ""
   });
 
+  // Estado para la paginación
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 5,
+    sort: "precio,asc",
+    totalElements: 0,
+    totalPages: 0
+  });
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -48,24 +57,40 @@ const DashboardAdmin = () => {
       }
     };
 
-    const fetchProductos = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:8080/api/v1/productos", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!response.ok) throw new Error("No se pudo obtener los productos");
-        const data = await response.json();
-        setProductos(data);
-      } catch (error) {
-        console.error(error);
-        setError("Error al obtener los productos");
-      }
-    };
-
     fetchUsuario();
-    fetchProductos();
+    fetchProductos(); // Llamamos a fetchProductos inicialmente
   }, []);
+
+  // Función para cargar productos con paginación
+  const fetchProductos = async (page = pagination.page, size = pagination.size, sort = pagination.sort) => {
+    try {
+      const token = localStorage.getItem("token");
+      const url = `http://localhost:8080/api/v1/productos/paginado?page=${page}&size=${size}&sort=${sort}`;
+      
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (!response.ok) throw new Error("No se pudo obtener los productos");
+      
+      const data = await response.json();
+      setProductos(data.content);
+      
+      // Actualizamos el estado de paginación
+      setPagination(prev => ({
+        ...prev,
+        page: data.number,
+        size: data.size,
+        totalElements: data.totalElements,
+        totalPages: data.totalPages,
+        sort: sort
+      }));
+      
+    } catch (error) {
+      console.error(error);
+      setError("Error al obtener los productos");
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -92,7 +117,9 @@ const DashboardAdmin = () => {
           });
 
           if (!response.ok) throw new Error("No se pudo eliminar el producto");
-          setProductos(productos.filter((p) => p.idProducto !== id));
+          
+          // Recargamos los productos manteniendo la paginación actual
+          fetchProductos(pagination.page, pagination.size, pagination.sort);
 
           Swal.fire("¡Eliminado!", "El producto ha sido eliminado.", "success");
         } catch (error) {
@@ -135,13 +162,9 @@ const DashboardAdmin = () => {
       });
 
       if (!response.ok) throw new Error("Error al guardar el producto");
-      const data = await response.json();
-
-      if (editando) {
-        setProductos(productos.map((p) => (p.idProducto === data.idProducto ? data : p)));
-      } else {
-        setProductos([...productos, data]);
-      }
+      
+      // Recargamos los productos manteniendo la paginación actual
+      fetchProductos(pagination.page, pagination.size, pagination.sort);
 
       setShowModal(false);
       setEditando(false);
@@ -150,6 +173,23 @@ const DashboardAdmin = () => {
       console.error(error);
       Swal.fire("Error", `No se pudo ${editando ? "actualizar" : "guardar"} el producto`, "error");
     }
+  };
+
+  // Manejadores para la paginación
+  const handlePageChange = (newPage) => {
+    fetchProductos(newPage, pagination.size, pagination.sort);
+  };
+
+  const handleSizeChange = (e) => {
+    const newSize = parseInt(e.target.value);
+    fetchProductos(0, newSize, pagination.sort);
+  };
+
+  const handleSortChange = (field) => {
+    const [currentField, currentDirection] = pagination.sort.split(',');
+    const newDirection = currentField === field && currentDirection === 'asc' ? 'desc' : 'asc';
+    const newSort = `${field},${newDirection}`;
+    fetchProductos(0, pagination.size, newSort);
   };
 
   if (error) return <div className="text-center text-danger mt-5">{error}</div>;
@@ -203,6 +243,30 @@ const DashboardAdmin = () => {
                 </button>
               </div>
 
+              {/* Controles de paginación */}
+              <div className="d-flex justify-content-between mb-3">
+                <div className="d-flex align-items-center">
+                  <span className="me-2">Mostrar:</span>
+                  <select 
+                    className="form-select form-select-sm" 
+                    style={{ width: '70px' }}
+                    value={pagination.size}
+                    onChange={handleSizeChange}
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
+                  <span className="ms-2">elementos</span>
+                </div>
+                <div>
+                  <span className="me-2">
+                    Página {pagination.page + 1} de {pagination.totalPages}
+                  </span>
+                </div>
+              </div>
+
               <div className="table-responsive">
                 <table className="table table-bordered table-hover table-sm align-middle">
                   <thead className="table-dark">
@@ -210,7 +274,16 @@ const DashboardAdmin = () => {
                       <th>ID</th>
                       <th>Nombre</th>
                       <th>Descripción</th>
-                      <th>Precio</th>
+                      <th>
+                        <button 
+                          className="btn btn-link text-white p-0 text-decoration-none" 
+                          onClick={() => handleSortChange('precio')}
+                        >
+                          Precio
+                          {pagination.sort.includes('precio,asc') && ' ↑'}
+                          {pagination.sort.includes('precio,desc') && ' ↓'}
+                        </button>
+                      </th>
                       <th>Stock</th>
                       <th>Imagen</th>
                       <th>Categoría</th>
@@ -246,6 +319,73 @@ const DashboardAdmin = () => {
                   </tbody>
                 </table>
               </div>
+
+              {/* Navegación de paginación */}
+              <nav aria-label="Page navigation">
+                <ul className="pagination justify-content-center">
+                  <li className={`page-item ${pagination.page === 0 ? 'disabled' : ''}`}>
+                    <button 
+                      className="page-link" 
+                      onClick={() => handlePageChange(0)}
+                    >
+                      Primera
+                    </button>
+                  </li>
+                  <li className={`page-item ${pagination.page === 0 ? 'disabled' : ''}`}>
+                    <button 
+                      className="page-link" 
+                      onClick={() => handlePageChange(pagination.page - 1)}
+                    >
+                      Anterior
+                    </button>
+                  </li>
+                  
+                  {/* Mostrar números de página */}
+                  {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (pagination.totalPages <= 5) {
+                      pageNum = i;
+                    } else if (pagination.page <= 2) {
+                      pageNum = i;
+                    } else if (pagination.page >= pagination.totalPages - 3) {
+                      pageNum = pagination.totalPages - 5 + i;
+                    } else {
+                      pageNum = pagination.page - 2 + i;
+                    }
+                    
+                    return (
+                      <li 
+                        key={pageNum} 
+                        className={`page-item ${pagination.page === pageNum ? 'active' : ''}`}
+                      >
+                        <button 
+                          className="page-link" 
+                          onClick={() => handlePageChange(pageNum)}
+                        >
+                          {pageNum + 1}
+                        </button>
+                      </li>
+                    );
+                  })}
+                  
+                  <li className={`page-item ${pagination.page >= pagination.totalPages - 1 ? 'disabled' : ''}`}>
+                    <button 
+                      className="page-link" 
+                      onClick={() => handlePageChange(pagination.page + 1)}
+                    >
+                      Siguiente
+                    </button>
+                  </li>
+                  <li className={`page-item ${pagination.page >= pagination.totalPages - 1 ? 'disabled' : ''}`}>
+                    <button 
+                      className="page-link" 
+                      onClick={() => handlePageChange(pagination.totalPages - 1)}
+                    >
+                      Última
+                    </button>
+                  </li>
+                </ul>
+              </nav>
             </>
           )}
         </div>
