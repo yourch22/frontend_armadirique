@@ -6,7 +6,7 @@ import {
   FaBars, FaUser, FaSearch, FaShoppingCart, FaTimes
 } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import fondoLogo from './logo.png';
+
 const DashboardCliente = () => {
   const [usuario, setUsuario] = useState(null);
   const [error, setError] = useState('');
@@ -146,6 +146,7 @@ const DashboardCliente = () => {
           {productos.length === 0 && <p>No hay productos disponibles.</p>}
 
           {productos.map(prod => (
+            
             <div key={prod.idProducto} style={{
               backgroundColor: '#fff',
               margin: '10px 0',
@@ -155,9 +156,14 @@ const DashboardCliente = () => {
               alignItems: 'center',
               transition: '0.3s ease',
             }}>
+
               <div>
                 <Link to="#">
-                  <img src={fondoLogo} alt={prod.nombre} style={{ width: '20vh' }} />
+                  <img
+                      src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`} // ¡Añade /api/v1!
+                      alt={prod.nombre}
+                      style={{ width: '20vh' }}
+                  />
                 </Link>
               </div>
               <div style={{ flex: 1, marginLeft: '15px' }}>
