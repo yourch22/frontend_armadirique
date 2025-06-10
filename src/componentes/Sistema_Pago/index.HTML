@@ -1448,86 +1448,86 @@
             }
         }
 
-function initializePayPal() {
-    const container = document.getElementById('paypal-button-container-form');
-    if (!container) {
-        console.error('Contenedor de PayPal no encontrado');
-        return;
-    }
-
-    // Limpiar contenedor anterior
-    container.innerHTML = '';
-
-    const totals = calculateTotals();
-    const totalUSD = (totals.total / 3.8).toFixed(2); // Conversión aproximada PEN a USD
-
-    // Verificar si PayPal está disponible
-    if (typeof paypal === 'undefined') {
-        container.innerHTML = `
-            <div class="alert alert-warning">
-                <i class="fas fa-exclamation-triangle me-2"></i>
-                Error cargando PayPal. <button class="btn btn-sm btn-primary ms-2" onclick="location.reload()">Recargar página</button>
-            </div>
-        `;
-        return;
-    }
-
-    try {
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: {
-                            value: totalUSD,
-                            currency_code: 'USD'
-                        },
-                        description: 'Compra de muebles - Armadirique'
-                    }]
-                });
-            },
-            onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                    console.log('Pago exitoso:', details);
-                    showPaymentStatus('success', `¡Pago PayPal exitoso! Transacción ID: ${details.id}`);
-                    showInvoiceModal();
-                });
-            },
-            onError: function(err) {
-                console.error('Error en PayPal:', err);
-                showPaymentStatus('error', 'Error en el procesamiento de PayPal. Intente nuevamente.');
-            },
-            onCancel: function(data) {
-                console.log('Pago cancelado:', data);
-                showPaymentStatus('error', 'Pago cancelado por el usuario.');
-            },
-            style: {
-                layout: 'vertical',
-                color: 'blue',
-                shape: 'rect',
-                label: 'paypal',
-                height: 40
+        function initializePayPal() {
+            const container = document.getElementById('paypal-button-container-form');
+            if (!container) {
+                console.error('Contenedor de PayPal no encontrado');
+                return;
             }
-        }).render('#paypal-button-container-form').catch(function(err) {
-            console.error('Error renderizando PayPal:', err);
-            container.innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    Error inicializando PayPal. 
-                    <button class="btn btn-sm btn-primary ms-2" onclick="initializePayPal()">Reintentar</button>
-                </div>
-            `;
-        });
-    } catch (error) {
-        console.error('Error en inicialización de PayPal:', error);
-        container.innerHTML = `
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-circle me-2"></i>
-                Error de configuración de PayPal.
-                <button class="btn btn-sm btn-primary ms-2" onclick="initializePayPal()">Reintentar</button>
-            </div>
-        `;
-    }
-}
+
+            // Limpiar contenedor anterior
+            container.innerHTML = '';
+
+            const totals = calculateTotals();
+            const totalUSD = (totals.total / 3.8).toFixed(2); // Conversión aproximada PEN a USD
+
+            // Verificar si PayPal está disponible
+            if (typeof paypal === 'undefined') {
+                container.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Error cargando PayPal. <button class="btn btn-sm btn-primary ms-2" onclick="location.reload()">Recargar página</button>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                paypal.Buttons({
+                    createOrder: function(data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: totalUSD,
+                                    currency_code: 'USD'
+                                },
+                                description: 'Compra de muebles - Armadirique'
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        return actions.order.capture().then(function(details) {
+                            console.log('Pago exitoso:', details);
+                            showPaymentStatus('success', `¡Pago PayPal exitoso! Transacción ID: ${details.id}`);
+                            showInvoiceModal();
+                        });
+                    },
+                    onError: function(err) {
+                        console.error('Error en PayPal:', err);
+                        showPaymentStatus('error', 'Error en el procesamiento de PayPal. Intente nuevamente.');
+                    },
+                    onCancel: function(data) {
+                        console.log('Pago cancelado:', data);
+                        showPaymentStatus('error', 'Pago cancelado por el usuario.');
+                    },
+                    style: {
+                        layout: 'vertical',
+                        color: 'blue',
+                        shape: 'rect',
+                        label: 'paypal',
+                        height: 40
+                    }
+                }).render('#paypal-button-container-form').catch(function(err) {
+                    console.error('Error renderizando PayPal:', err);
+                    container.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            Error inicializando PayPal. 
+                            <button class="btn btn-sm btn-primary ms-2" onclick="initializePayPal()">Reintentar</button>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error('Error en inicialización de PayPal:', error);
+                container.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        Error de configuración de PayPal.
+                        <button class="btn btn-sm btn-primary ms-2" onclick="initializePayPal()">Reintentar</button>
+                    </div>
+                `;
+            }
+        }
 
         function formatCardNumber(e) {
             let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -1743,7 +1743,7 @@ function initializePayPal() {
             setAddressMode('manual');
         }
 
-        // Manejo del formulario
+        // Manejo del formulario - MODIFICADO PARA ENVIAR A PYTHON
         function handleFormSubmit(e) {
             e.preventDefault();
             
@@ -1757,12 +1757,48 @@ function initializePayPal() {
             isProcessing = true;
             updateSubmitButton(true);
             
-            setTimeout(() => {
-                showPaymentStatus('success', getSuccessMessage());
-                showInvoiceModal();
+            // Enviar datos al servidor Python
+            sendDataToPython();
+        }
+
+        async function sendDataToPython() {
+            const formData = getFormData();
+            const totals = calculateTotals();
+            const orderNumber = `ARM-${Date.now().toString().slice(-8)}`;
+            
+            const dataToSend = {
+                orderNumber: orderNumber,
+                customer: formData,
+                products: products,
+                totals: totals,
+                paymentMethod: currentPaymentMethod,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('http://localhost:8000/process-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(dataToSend)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showPaymentStatus('success', '¡Pago procesado exitosamente! Se ha enviado la boleta por email.');
+                    showInvoiceModal();
+                } else {
+                    showPaymentStatus('error', result.message || 'Error al procesar el pago');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showPaymentStatus('error', 'Error de conexión. Asegúrate de que el servidor Python esté ejecutándose.');
+            } finally {
                 isProcessing = false;
                 updateSubmitButton(false);
-            }, 2000);
+            }
         }
 
         function updateSubmitButton(processing) {
@@ -1783,19 +1819,6 @@ function initializePayPal() {
             }
         }
 
-        function getSuccessMessage() {
-            switch (currentPaymentMethod) {
-                case 'yape':
-                    return '¡Datos guardados! Proceda a realizar el pago con Yape escaneando el QR';
-                case 'plin':
-                    return '¡Datos guardados! Proceda a realizar el pago con Plin escaneando el QR';
-                case 'paypal':
-                    return '¡Pago PayPal procesado exitosamente!';
-                default:
-                    return '¡Información de pago guardada exitosamente!';
-            }
-        }
-
         function showPaymentStatus(type, message) {
             const statusDiv = document.getElementById('payment-status');
             
@@ -1812,7 +1835,7 @@ function initializePayPal() {
                         <div class="mt-5">
                             <button class="btn btn-success-premium me-3 btn-lg" onclick="sendInvoiceByEmail()">
                                 <i class="fas fa-envelope me-2"></i>
-                                ENVIAR BOLETA
+                                REENVIAR EMAIL
                             </button>
                             <button class="btn btn-danger-premium btn-lg" onclick="downloadInvoicePDF()">
                                 <i class="fas fa-download me-2"></i>
@@ -1891,56 +1914,52 @@ function initializePayPal() {
             btn.disabled = true;
             
             setTimeout(() => {
-                alert('¡Boleta enviada exitosamente a su correo electrónico!');
+                alert('¡Boleta reenviada exitosamente a su correo electrónico!');
                 btn.innerHTML = originalText;
                 btn.disabled = false;
                 isProcessing = false;
             }, 2000);
         }
 
-        function downloadInvoicePDF() {
+        async function downloadInvoicePDF() {
             const formData = getFormData();
             const totals = calculateTotals();
             const orderNumber = document.getElementById('order-number').textContent;
             
-            const invoiceContent = `
-ARMADIRIQUE - BOLETA DE VENTA
+            const dataToSend = {
+                orderNumber: orderNumber,
+                customer: formData,
+                products: products,
+                totals: totals,
+                paymentMethod: currentPaymentMethod
+            };
 
-${orderNumber}
-Fecha: ${new Date().toLocaleDateString()}
+            try {
+                const response = await fetch('http://localhost:8000/generate-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(dataToSend)
+                });
 
-Cliente: ${formData.firstName} ${formData.lastName}
-Email: ${formData.email}
-Teléfono: ${formData.phone}
-
-Dirección de entrega:
-${formData.address}
-${formData.district}, ${formData.department}
-${formData.zipCode}
-
-PRODUCTOS:
-${products.map(p => `${p.name} x${p.quantity} - S/ ${(p.price * p.quantity).toFixed(2)}`).join('\n')}
-
-Subtotal: S/ ${totals.subtotal.toFixed(2)}
-Envío: S/ ${totals.shipping.toFixed(2)}
-IGV (18%): S/ ${totals.tax.toFixed(2)}
-TOTAL: S/ ${totals.total.toFixed(2)}
-
-Método de pago: ${currentPaymentMethod.toUpperCase()}
-
-¡Gracias por su compra!
-            `;
-            
-            // Crear y descargar archivo
-            const blob = new Blob([invoiceContent], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `Boleta_Armadirique_${Date.now()}.txt`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Boleta_Armadirique_${Date.now()}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                } else {
+                    alert('Error al generar el PDF');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error de conexión al generar PDF');
+            }
         }
     </script>
 </body>
