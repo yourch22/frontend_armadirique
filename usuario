@@ -1,0 +1,180 @@
+
+import React, { useEffect, useState } from 'react';
+
+
+import { Button, Table, Modal, Form } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+
+// Componente principal de Usuarios
+const Usuarios = () => {
+
+  const [usuarios, setUsuarios] = useState([]);
+
+  
+  const [showModal, setShowModal] = useState(false);
+
+
+  const [formData, setFormData] = useState({
+    nombre: '',
+    apellidos: '',
+    email: '',
+    telefono: '',
+  });
+
+  // Estado para saber si se está editando un usuario existente
+  const [editando, setEditando] = useState(null);
+
+  // Función para obtener todos los usuarios desde el backend
+  const fetchUsuarios = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/usuarios');
+      const data = await res.json();
+      setUsuarios(data);
+    } catch (error) {
+      console.error('Error al cargar usuarios:', error);
+    }
+  };
+
+  // Función para crear o actualizar un usuario
+  const handleGuardar = async () => {
+    try {
+      const url = editando
+        ? `http://localhost:8080/usuarios/${editando.id}`
+        : 'http://localhost:8080/usuarios';
+      const method = editando ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error('Error al guardar usuario');
+
+      toast.success(editando ? 'Usuario actualizado' : 'Usuario creado');
+      setFormData({ nombre: '', apellidos: '', email: '', telefono: '' });
+      setEditando(null);
+      setShowModal(false);
+      fetchUsuarios();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // Función para llenar el formulario cuando se quiere editar un usuario
+  const handleEditar = (usuario) => {
+    setEditando(usuario);
+    setFormData({
+      nombre: usuario.nombre,
+      apellidos: usuario.apellidos,
+      email: usuario.email,
+      telefono: usuario.telefono,
+    });
+    setShowModal(true);
+  };
+
+  // Función para eliminar un usuario por su ID
+  const handleEliminar = async (id) => {
+    if (!window.confirm('¿Estás seguro de eliminar este usuario?')) return;
+
+    try {
+      await fetch(`http://localhost:8080/usuarios/${id}`, { method: 'DELETE' });
+      toast.success('Usuario eliminado');
+      fetchUsuarios();
+    } catch (error) {
+      toast.error('Error al eliminar usuario');
+    }
+  };
+
+  // Hook para cargar usuarios al montar el componente
+  useEffect(() => {
+    fetchUsuarios();
+  }, []);
+
+  // Renderizado del componente
+  return (
+    <div className="container mt-4">
+      <h2>Usuarios</h2>
+
+      {/* Botón para abrir el modal de creación */}
+      <Button onClick={() => setShowModal(true)}>Crear nuevo</Button>
+
+      {/* Tabla de usuarios */}
+      <Table striped bordered hover className="mt-3">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {usuarios.map((user) => (
+            <tr key={user.id}>
+              <td>{user.nombre}</td>
+              <td>{user.apellidos}</td>
+              <td>{user.email}</td>
+              <td>{user.telefono}</td>
+              <td>
+                <Button size="sm" onClick={() => handleEditar(user)}>Editar</Button>{' '}
+                <Button size="sm" variant="danger" onClick={() => handleEliminar(user.id)}>Eliminar</Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+      {/* Modal para crear o editar usuarios */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>{editando ? 'Editar Usuario' : 'Nuevo Usuario'}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.nombre}
+                onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Apellidos</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.apellidos}
+                onChange={(e) => setFormData({ ...formData, apellidos: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Teléfono</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.telefono}
+                onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
+          <Button onClick={handleGuardar}>{editando ? 'Actualizar' : 'Guardar'}</Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
+};
+
+
+export default Usuarios;
