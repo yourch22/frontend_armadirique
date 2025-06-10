@@ -76,7 +76,6 @@ const handleSubmit = async (e) => {
 
     const data = await response.json();
     localStorage.setItem('token', data.token);
-
     // Obtener usuario actual
     const userResponse = await fetch('http://localhost:8080/api/v1/auth/actual-usuario', {
       method: 'GET',
@@ -91,6 +90,8 @@ const handleSubmit = async (e) => {
 
     const user = await userResponse.json();
     const rol = user.authorities[0].authority;
+    localStorage.setItem('userId', user.usuarioId);
+
 
     setSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
 
