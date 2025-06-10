@@ -1,7 +1,7 @@
 // Importaciones necesarias
 import React, { useEffect, useState } from 'react';
 import Carrito from '../Carrito/Carrito';
-
+import { useCarrito } from '../../context/CarritoContext';
 import {
   Container,
   Navbar,
@@ -20,12 +20,13 @@ import { Link } from "react-router-dom";
 
 
 
-
 // Definición del componente
 
 function Catalogo() {
-  
+  const { agregarAlCarrito, carrito } = useCarrito();
 
+
+  const totalItems = carrito?.items?.length || 0;
   const [showSidebar, setShowSidebar] = useState(false);
   const [isHovered, setIsHovered] = useState(null);
   const [isHoveredButton, setIsHoveredButton] = useState(null);
@@ -40,24 +41,24 @@ function Catalogo() {
     localStorage.removeItem("token");
     window.location.href = "/login";
   };
-   //Cargar productos desde la api
+  //Cargar productos desde la api
   const [productos, setProductos] = useState([]);
   useEffect(() => {
-      fetch('http://localhost:8080/api/v1/productos')
-        .then(response => {
-          if (!response.ok) throw new Error('Error al obtener productos');
-          return response.json();
-        })
-        .then(data => {
-          setProductos(data); // Guardamos el array de productos en el estado
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }, []);
+    fetch('http://localhost:8080/api/v1/productos')
+      .then(response => {
+        if (!response.ok) throw new Error('Error al obtener productos');
+        return response.json();
+      })
+      .then(data => {
+        setProductos(data); // Guardamos el array de productos en el estado
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }, []);
 
   return (
-    
+
     <div
       style={{
         minHeight: "100vh",
@@ -123,15 +124,9 @@ function Catalogo() {
                 margin: "0 1rem",
               }}
             />
-            <FaShoppingCart
-              style={{
-                fontSize: "1.2rem",
-                color: "#333",
-                cursor: "pointer",
-                margin: "0 1rem",
-              }}
-              onClick={toggleCarrito}
-            />
+            <FaShoppingCart className="icono-carrito" style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }}
+              onClick={toggleCarrito} />{totalItems > 0 && (<span className="" >{totalItems}</span>)}
+
 
             <Dropdown align="end">
               <Dropdown.Toggle
@@ -235,7 +230,7 @@ function Catalogo() {
           backgroundColor: "#f3f3f3",
         }}
       >
-        
+
         {/* Columna Izquierda */}
         <div
           style={{
@@ -293,12 +288,12 @@ function Catalogo() {
             >
               {/*Imagen*/}
               <div>
-                
+
                 <img src={`./imgMuebles/${prod.imagenUrl}.jpg`} alt={prod.imagenUrl} style={{ width: "8rem" }}></img>
-                
+
               </div>
               {/*Nombre y descripcion*/}
-              <div style={{ flex: 1, margin:"0rem 2rem" }}>
+              <div style={{ flex: 1, margin: "0rem 2rem" }}>
                 <Link to={`/vista/${prod.idProducto}`}
                   style={{
                     textDecoration: "none",
@@ -321,10 +316,10 @@ function Catalogo() {
                   textAlign: "end",
                 }}
               >
-                <h5 style={{ marginBottom: "7vh",textAlign:"center" }}>S/.{prod.precio}</h5>
+                <h5 style={{ marginBottom: "7vh", textAlign: "center" }}>S/.{prod.precio}</h5>
 
                 <button
-
+                  key={prod.idProducto}
                   style={{
                     fontSize: "1.7vh",
                     color: isHoveredButton === prod.idProducto ? "black" : "white",
@@ -336,8 +331,8 @@ function Catalogo() {
                   }}
                   onMouseEnter={() => setIsHoveredButton(prod.idProducto)}
                   onMouseLeave={() => setIsHoveredButton(null)}
-                  onClick={() => toggleCarrito}
-                  
+                  onClick={() => agregarAlCarrito(prod.idProducto)}
+
                 >
                   Agregar al carrito
                 </button>

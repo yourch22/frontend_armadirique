@@ -1,85 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { } from 'react';
 import './carrito-estilos.css';
-
+import { useCarrito } from '../../context/CarritoContext';
 
 
 const Carrito = ({ carritoVisible, toggleCarrito }) => {
 
-  useEffect(() => {
-  RecargarCarrito();
-  }, []);
-  const [carrito, setCarrito] = useState(null);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
+  const {
+    carrito,
 
-    const agregarAlCarrito = (productoId) => {
-    fetch(`http://localhost:8080/api/v1/carrito/1/agregar/${productoId}?cantidad=1`, {
-      method: 'POST',
-    })
-      .then(() => RecargarCarrito())
-      .catch((err) => console.error('Error al agregar:', err));
-  };
+    eliminarProducto,
+    vaciarCarrito,
+    actualizarCantidad,
 
+  } = useCarrito();
 
-  const RecargarCarrito = () => {
-    setCargando(true); // <- Agrega esto
-    fetch('http://localhost:8080/api/v1/carrito/1')
-      .then((response) => {
-        if (!response.ok) throw new Error('Error al obtener el carrito');
-        return response.json();
-      })
-      .then((data) => {
-        setCarrito(data);
-        setCargando(false);
-      })
-      .catch((err) => {
-        setError(err.message);
-        setCargando(false);
-      });
-  };
-  const eliminarProducto = (productoId) => {
+  if (!carrito) return null;
 
-    fetch(`http://localhost:8080/api/v1/carrito/1/eliminar/${productoId}`, {
-      method: 'DELETE'
-    })
-      .then(res => {
-        if (!res.ok) throw new Error('Error al eliminar el producto');
-        return res.json();
-      })
-      .then(data => {
-        setCarrito(data.items); // Actualiza el carrito con los nuevos datos
-      })
-      .then(() => RecargarCarrito())
-      .catch(err => console.error(err));
-  };
-  const vaciarCarrito = () => {
-    fetch('http://localhost:8080/api/v1/carrito/1/vaciar', {
-      method: 'DELETE'
-    })
-      .then(() => RecargarCarrito())
-      .catch(err => console.error('Error al vaciar el carrito:', err));
-  };
-  const actualizarCantidad = (productoId, nuevaCantidad) => {
-    if (nuevaCantidad < 1) return; // No permitir menos de 1
-
-    fetch(`http://localhost:8080/api/v1/carrito/1/actualizar/${productoId}?cantidad=${nuevaCantidad}`, {
-      method: 'PUT'
-    })
-      .then(() => RecargarCarrito())
-      .catch(err => console.error('Error al actualizar cantidad:', err));
-  };
-
-
-  if (cargando) return <p>Cargando carrito...</p>;
-  if (error) return <p>Error: {error}</p>;
-
-
-  const PrecioTotal = carrito.items.reduce((sum, prod) => sum + prod.precio * prod.cantidad, 0);
+  const totalPrecio = carrito?.items?.reduce((total, item) => total + item.producto.precio * item.cantidad,0) || 0;
 
 
   return (
     <div>
-
       <div className={`carrito ${carritoVisible ? 'visible' : ''}`}>
 
         <h6>Carrito de Compras</h6>
@@ -119,7 +60,7 @@ const Carrito = ({ carritoVisible, toggleCarrito }) => {
 
               ))}
               <div className='total-precio'>
-                <div>Total: {PrecioTotal}</div>
+                <div>Total: .S/{totalPrecio}</div>
               </div>
               <div className='comprar'>
                 <button className='btn-comprar'>Comprar</button>

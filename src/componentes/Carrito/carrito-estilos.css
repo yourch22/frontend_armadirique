@@ -80,6 +80,7 @@ height: 33%;
 }
 /*adwwwddddddddddas*/
 .carrito {
+overflow: scroll;
   position: fixed;
   top: 0;
   right: -52vh;

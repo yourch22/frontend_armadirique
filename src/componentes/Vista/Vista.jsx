@@ -1,11 +1,12 @@
 // Importaciones necesarias
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import Carrito from '../Carrito/Carrito';
-import { HooksCarrito } from '../Carrito/HooksCarrito';
+
+import { useCarrito } from '../../context/CarritoContext';
+
 import { useParams } from "react-router-dom";
 import {
     Container,
-
     Navbar,
     Nav,
     Offcanvas
@@ -23,32 +24,25 @@ import {
 
 function Vista() {
 
- const {
-    carrito,
-    cargando,
-    error,
-    agregarAlCarrito,
-    eliminarProducto,
-    vaciarCarrito,
-    actualizarCantidad,
-    RecargarCarrito
-  } = HooksCarrito();
-  
+    const { agregarAlCarrito, carrito } = useCarrito();
+
 
     const [showSidebar, setShowSidebar] = useState(false);
     const [carritoVisible, setCarritoVisible] = useState(false);
-    
-      const toggleCarrito = () => {
+
+    const toggleCarrito = () => {
         setCarritoVisible(!carritoVisible);
-      };
+    };
+
+    const totalItems = carrito?.items?.length || 0;
 
 
-    const {id} = useParams();
+    const { id } = useParams();
     const [prod, setProd] = useState([]);
     useEffect(() => {
         fetch(`http://localhost:8080/api/v1/productos/${id}`)
-        .then((res) => res.json())
-        .then((data) => setProd(data));
+            .then((res) => res.json())
+            .then((data) => setProd(data));
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }, [id]);
 
@@ -59,7 +53,7 @@ function Vista() {
             paddingTop: '60px',
             position: 'relative'
         }}>
-            <Carrito carritoVisible={carritoVisible} toggleCarrito={toggleCarrito}  />
+            <Carrito carritoVisible={carritoVisible} toggleCarrito={toggleCarrito} />
             {/* Header/Navbar */}
             <Navbar bg="light" expand="lg" style={{
                 backgroundColor: '#fff !important',
@@ -93,8 +87,10 @@ function Vista() {
 
                     <div style={{ display: 'flex' }}>
                         <FaSearch style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                        <FaShoppingCart style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }}
-                        onClick={toggleCarrito} />
+
+                        <FaShoppingCart className="icono-carrito" style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }}
+                            onClick={toggleCarrito} />{totalItems > 0 && (<span className="" >{totalItems}</span>)}
+
                         <FaUser style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
                     </div>
                 </Container>
@@ -123,54 +119,54 @@ function Vista() {
             <main style={{
                 padding: '4rem 8rem'
             }}>
-                    <div style={{ 
-                        display: 'flex',
-                        height:'35rem',
-                        padding:'1rem',
-                        //border:'1px solid black',
-                        boxShadow: 'inset 0 0 0 1px #c3c3c3',
-                        borderRadius:'1rem'
-                        }}> 
-                        {/* imagen*/}
-                        <div style={{width:'50%',alignSelf:'center'}}>
-                            <img src={`/imgMuebles/${prod.imagenUrl}.jpg`} style={{width:'30rem',objectFit:'cover'}}alt="" />
-                        </div>
+                <div style={{
+                    display: 'flex',
+                    height: '35rem',
+                    padding: '1rem',
+                    //border:'1px solid black',
+                    boxShadow: 'inset 0 0 0 1px #c3c3c3',
+                    borderRadius: '1rem'
+                }}>
+                    {/* imagen*/}
+                    <div style={{ width: '50%', alignSelf: 'center' }}>
+                        <img src={`/imgMuebles/${prod.imagenUrl}.jpg`} style={{ width: '30rem', objectFit: 'cover' }} alt="" />
+                    </div>
 
-                        {/* info*/}
-                        <div style={{width:'50%',margin:'0rem 2rem'}}>
-                            {/* nombre*/}
-                            <div style={{fontWeight:'bold',fontSize:'1.3rem',margin:'1rem 0rem'}}>
-                                {prod.nombre}
+                    {/* info*/}
+                    <div style={{ width: '50%', margin: '0rem 2rem' }}>
+                        {/* nombre*/}
+                        <div style={{ fontWeight: 'bold', fontSize: '1.3rem', margin: '1rem 0rem' }}>
+                            {prod.nombre}
+                        </div>
+                        <hr />
+                        {/* descripcion*/}
+                        <div style={{ margin: '2rem 0rem' }}>
+                            <div style={{ fontWeight: 'bold' }}>Descripcion:</div>
+                            <div style={{}}>{prod.descripcion}</div>
+                        </div>
+                        {/* estilos*/}
+                        <div style={{ margin: '2rem 0rem' }}>
+                            <div style={{ fontWeight: 'bold' }}>Estilos:</div>
+                            <div></div>
+                        </div >
+                        {/* precio*/}
+                        <div style={{ margin: '2rem 2rem', textAlign: 'right' }}>
+                            <div style={{ fontWeight: 'bold', fontSize: '2rem' }}>S./{prod.precio}</div>
+                        </div>
+                        {/* boton*/}
+                        <div style={{ margin: '1rem 2rem', textAlign: 'right' }}>
+                            <button style={{ height: '3rem', width: '12rem' }} onClick={(e) => { e.preventDefault(); agregarAlCarrito(prod.idProducto) }}>ANADIR AL CARRITO</button>
+                        </div>
+                        {/* stock*/}
+                        <div>
+                            <div style={{ fontWeight: 'bold' }}>Stock:
+                                <span style={{ fontWeight: 'normal' }}> {prod.stock}</span>
                             </div>
-                            <hr/>
-                            {/* descripcion*/}
-                            <div style={{margin:'2rem 0rem'}}>
-                                <div style={{fontWeight:'bold'}}>Descripcion:</div>
-                                <div style={{}}>{prod.descripcion}</div>
-                            </div>
-                            {/* estilos*/}
-                            <div style={{margin:'2rem 0rem'}}>
-                                <div style={{fontWeight:'bold'}}>Estilos:</div>
-                                <div></div>
-                            </div >
-                            {/* precio*/}
-                            <div style={{margin:'2rem 2rem',textAlign:'right'}}>
-                                <div style={{fontWeight:'bold',fontSize:'2rem'}}>S./{prod.precio}</div>
-                            </div>
-                            {/* boton*/}
-                            <div style={{margin:'1rem 2rem',textAlign:'right'}}>
-                                <button style={{height:'3rem',width:'12rem'}} onClick={()=>{ RecargarCarrito();agregarAlCarrito(prod.idProducto);  }}>ANADIR AL CARRITO</button>
-                            </div>
-                            {/* stock*/}
-                            <div>
-                                <div style={{fontWeight:'bold'}}>Stock: 
-                                    <span style={{fontWeight:'normal'}}> {prod.stock}</span>
-                                </div>
-                            </div>
-                            
                         </div>
 
                     </div>
+
+                </div>
 
             </main>
 

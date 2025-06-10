@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import Carrito from '../Carrito/Carrito';
+import { useCarrito } from '../../context/CarritoContext';
 import {
     Container,
     Navbar,
@@ -31,9 +32,9 @@ const images = [
 function Catalogo() {
 
     const [showSidebar, setShowSidebar] = useState(false);
-
+    const {carrito } = useCarrito();
     const [index, setIndex] = useState(0);
-
+    const totalItems = carrito?.items?.length || 0;
     const prevSlide = () => {
         setIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
     };
@@ -42,6 +43,11 @@ function Catalogo() {
         setIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     };
 
+    const [carritoVisible, setCarritoVisible] = useState(false);
+
+    const toggleCarrito = () => {
+        setCarritoVisible(!carritoVisible);
+    };
     //Cargar productos desde la api
     const [productos, setProductos] = useState([]);
     useEffect(() => {
@@ -65,7 +71,7 @@ function Catalogo() {
             paddingTop: '60px',
             position: 'relative'
         }}>
-
+            <Carrito carritoVisible={carritoVisible} toggleCarrito={toggleCarrito} />
             {/* Header/Navbar */}
             <Navbar bg="light" expand="lg" style={{
                 backgroundColor: '#fff !important',
@@ -101,9 +107,8 @@ function Catalogo() {
                         <Link to="#">
                             <FaSearch style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
                         </Link>
-                        <Link to="/carrito">
-                            <FaShoppingCart style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                        </Link>
+                        <FaShoppingCart className="icono-carrito" style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }}
+                            onClick={toggleCarrito} />{totalItems > 0 && (<span className="" >{totalItems}</span>)}
                         <Link to="#">
                             <FaUser style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
                         </Link>
@@ -207,17 +212,17 @@ function Catalogo() {
                                 height: '17rem',
                                 textAlign: 'center',
                             }}>
-                                <div style={{ padding: '5%'}}>{/*Imagen */}
+                                <div style={{ padding: '5%' }}>{/*Imagen */}
                                     <img src={`./imgMuebles/${prod.imagenUrl}.jpg`} alt={`mueble${prod.idProducto}`}
                                         style={{
-                                            
-                                            height:'10rem',
-                                            objectFit:'cover'
+
+                                            height: '10rem',
+                                            objectFit: 'cover'
                                         }} />
                                 </div>
                                 <div style={{ padding: '5%', fontSize: '1rem' }}>{/*Texto */}
-                                    <p style={{marginBottom:'0.5rem'}}>{prod.nombre}</p>
-                                    <p style={{marginBottom:'0.5rem'}}>S./{prod.precio}</p>
+                                    <p style={{ marginBottom: '0.5rem' }}>{prod.nombre}</p>
+                                    <p style={{ marginBottom: '0.5rem' }}>S./{prod.precio}</p>
 
                                 </div>
 
@@ -272,7 +277,7 @@ function Catalogo() {
 
         </div>
 
-    
+
 
     );
 }
