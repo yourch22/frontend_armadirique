@@ -1,5 +1,7 @@
 // Importaciones necesarias
 import React, { useEffect, useState} from "react";
+import Carrito from '../Carrito/Carrito';
+import { HooksCarrito } from '../Carrito/HooksCarrito';
 import { useParams } from "react-router-dom";
 import {
     Container,
@@ -21,14 +23,32 @@ import {
 
 function Vista() {
 
+ const {
+    carrito,
+    cargando,
+    error,
+    agregarAlCarrito,
+    eliminarProducto,
+    vaciarCarrito,
+    actualizarCantidad,
+    RecargarCarrito
+  } = HooksCarrito();
+  
+
     const [showSidebar, setShowSidebar] = useState(false);
+    const [carritoVisible, setCarritoVisible] = useState(false);
+    
+      const toggleCarrito = () => {
+        setCarritoVisible(!carritoVisible);
+      };
+
 
     const {id} = useParams();
-    const [producto, setProducto] = useState([]);
+    const [prod, setProd] = useState([]);
     useEffect(() => {
         fetch(`http://localhost:8080/api/v1/productos/${id}`)
         .then((res) => res.json())
-        .then((data) => setProducto(data));
+        .then((data) => setProd(data));
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     }, [id]);
 
@@ -39,7 +59,7 @@ function Vista() {
             paddingTop: '60px',
             position: 'relative'
         }}>
-
+            <Carrito carritoVisible={carritoVisible} toggleCarrito={toggleCarrito}  />
             {/* Header/Navbar */}
             <Navbar bg="light" expand="lg" style={{
                 backgroundColor: '#fff !important',
@@ -73,7 +93,8 @@ function Vista() {
 
                     <div style={{ display: 'flex' }}>
                         <FaSearch style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                        <FaShoppingCart style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
+                        <FaShoppingCart style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }}
+                        onClick={toggleCarrito} />
                         <FaUser style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
                     </div>
                 </Container>
@@ -112,20 +133,20 @@ function Vista() {
                         }}> 
                         {/* imagen*/}
                         <div style={{width:'50%',alignSelf:'center'}}>
-                            <img src={`/imgMuebles/${producto.imagenUrl}.jpg`} style={{width:'30rem',objectFit:'cover'}}alt="" />
+                            <img src={`/imgMuebles/${prod.imagenUrl}.jpg`} style={{width:'30rem',objectFit:'cover'}}alt="" />
                         </div>
 
                         {/* info*/}
                         <div style={{width:'50%',margin:'0rem 2rem'}}>
                             {/* nombre*/}
                             <div style={{fontWeight:'bold',fontSize:'1.3rem',margin:'1rem 0rem'}}>
-                                {producto.nombre}
+                                {prod.nombre}
                             </div>
                             <hr/>
                             {/* descripcion*/}
                             <div style={{margin:'2rem 0rem'}}>
                                 <div style={{fontWeight:'bold'}}>Descripcion:</div>
-                                <div style={{}}>{producto.descripcion}</div>
+                                <div style={{}}>{prod.descripcion}</div>
                             </div>
                             {/* estilos*/}
                             <div style={{margin:'2rem 0rem'}}>
@@ -134,16 +155,16 @@ function Vista() {
                             </div >
                             {/* precio*/}
                             <div style={{margin:'2rem 2rem',textAlign:'right'}}>
-                                <div style={{fontWeight:'bold',fontSize:'2rem'}}>S./{producto.precio}</div>
+                                <div style={{fontWeight:'bold',fontSize:'2rem'}}>S./{prod.precio}</div>
                             </div>
                             {/* boton*/}
                             <div style={{margin:'1rem 2rem',textAlign:'right'}}>
-                                <button style={{height:'3rem',width:'12rem'}}>ANADIR AL CARRITO</button>
+                                <button style={{height:'3rem',width:'12rem'}} onClick={()=>{ RecargarCarrito();agregarAlCarrito(prod.idProducto);  }}>ANADIR AL CARRITO</button>
                             </div>
                             {/* stock*/}
                             <div>
                                 <div style={{fontWeight:'bold'}}>Stock: 
-                                    <span style={{fontWeight:'normal'}}> {producto.stock}</span>
+                                    <span style={{fontWeight:'normal'}}> {prod.stock}</span>
                                 </div>
                             </div>
                             

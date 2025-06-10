@@ -1,6 +1,7 @@
 // Importaciones necesarias
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
+import Carrito from '../Carrito/Carrito';
 import {
     Container,
     Navbar,
@@ -266,7 +267,12 @@ function Catalogo() {
 
             </div>
 
+            <Carrito />
+
+
         </div>
+
+    
 
     );
 }

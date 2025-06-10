@@ -1,0 +1,104 @@
+.botones-superiores{
+    display: flex;
+    margin: 1rem;
+    justify-content: space-between;
+}
+.item{
+    display: flex;
+    
+    padding: 1rem 0rem 1rem 1rem;
+    outline: 1px solid rgb(168, 168, 168);
+
+}
+
+.seccion-izquierda{
+    margin: 0rem 0rem;
+}
+.seccion-central{
+    margin: 0rem 1rem;
+    text-align: center;
+}
+.seccion-derecha{
+    margin: 0rem rem;
+}
+.nombre{
+ padding: auto;
+ height: 33%;
+}
+.precio{
+height: 33%;
+}
+.cantidad-seccion{
+padding: auto;
+height: 33%;
+}
+.btn-cantidad{
+    display: flex;
+  justify-content: center; 
+  align-items: center;    
+    text-align: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color:rgb(243, 243, 243);
+    margin: 0rem 0.5rem;
+}
+.btn-eliminar{
+    display: flex;
+  justify-content: center; 
+  align-items: center;    
+    text-align: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    background-color:rgb(255, 131, 131);
+}
+.btn-vaciar{
+    width: 1rem;
+    height: 1rem;
+    background-color:grey;
+}
+.contenedor-carrito{
+    display: flex;
+}
+.item-carrito{
+    flex-direction: column;
+    width: 100%;
+}
+
+.producto-miniatura{
+    height: 5rem;
+    margin: 0.5rem;
+}
+.cantidad-seccion{
+    display: flex;
+}
+.marco-miniatura{
+    border: 1px solid rgb(168, 168, 168);
+
+}
+.total-precio{
+    margin: 1rem 2rem;
+}
+/*adwwwddddddddddas*/
+.carrito {
+  position: fixed;
+  top: 0;
+  right: -52vh;
+  width: 52vh;
+  height: 100%;
+  background-color: #f8f8f8;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+  transition: right 0.3s ease;
+  z-index: 9999;
+  padding: 2vh 2vh;
+  
+}
+
+.carrito.visible {
+  right: 0;
+}
+.btn-comprar{
+    width: 100%;
+    height: 2rem;
+    color: white;
+    background-color: black;
+}

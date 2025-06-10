@@ -1,5 +1,7 @@
 // Importaciones necesarias
 import React, { useEffect, useState } from 'react';
+import Carrito from '../Carrito/Carrito';
+
 import {
   Container,
   Navbar,
@@ -22,9 +24,18 @@ import { Link } from "react-router-dom";
 // Definición del componente
 
 function Catalogo() {
+  
+
   const [showSidebar, setShowSidebar] = useState(false);
   const [isHovered, setIsHovered] = useState(null);
   const [isHoveredButton, setIsHoveredButton] = useState(null);
+
+  const [carritoVisible, setCarritoVisible] = useState(false);
+
+  const toggleCarrito = () => {
+    setCarritoVisible(!carritoVisible);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/login";
@@ -46,6 +57,7 @@ function Catalogo() {
     }, []);
 
   return (
+    
     <div
       style={{
         minHeight: "100vh",
@@ -53,6 +65,7 @@ function Catalogo() {
         position: "relative",
       }}
     >
+      <Carrito carritoVisible={carritoVisible} toggleCarrito={toggleCarrito} />
       {/* Header/Navbar */}
       <Navbar
         bg="light"
@@ -117,6 +130,7 @@ function Catalogo() {
                 cursor: "pointer",
                 margin: "0 1rem",
               }}
+              onClick={toggleCarrito}
             />
 
             <Dropdown align="end">
@@ -221,6 +235,7 @@ function Catalogo() {
           backgroundColor: "#f3f3f3",
         }}
       >
+        
         {/* Columna Izquierda */}
         <div
           style={{
@@ -321,6 +336,8 @@ function Catalogo() {
                   }}
                   onMouseEnter={() => setIsHoveredButton(prod.idProducto)}
                   onMouseLeave={() => setIsHoveredButton(null)}
+                  onClick={() => toggleCarrito}
+                  
                 >
                   Agregar al carrito
                 </button>
@@ -344,6 +361,8 @@ function Catalogo() {
           Barra Derecha
         </div>
       </div>
+
+
     </div>
   );
 }
