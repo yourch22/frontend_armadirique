@@ -269,40 +269,41 @@ const DashboardAdmin = () => {
   return (
     <div className="d-flex flex-column flex-md-row vh-100">
       {/* Sidebar */}
-      <nav className="bg-dark text-white p-3" style={{ minWidth: "220px" }}>
-        <h4 className="text-uppercase mb-4 text-center">ARMADIRIQUE</h4>
-        <ul className="nav flex-column">
-          {[
-            { label: "Inicio", key: "inicio" },
-            { label: "Gestión de Usuarios", key: "usuarios" },
-            { label: "Gestión de Productos", key: "productos" },
-            { label: "Gestión de Pedidos", key: "pedidos" },
-            { label: "Inventario", key: "inventario" },
-            { label: "Producción", key: "produccion" },
-            { label: "Reportes", key: "reportes" },
-            { label: "Configuración", key: "configuracion" },
-          ].map((item) => (
-            <li key={item.key} className="nav-item">
-              <button
-                className={`nav-link btn btn-link text-start w-100 ${
-                  vistaActual === item.key ? "active" : ""
-                }`}
-                onClick={() => setVistaActual(item.key)}
-              >
-                {item.label}
-              </button>
-            </li>
-          ))}
-          <li className="nav-item mt-4">
-            <button
-              onClick={handleLogout}
-              className="btn btn-sm btn-outline-light w-100"
-            >
-              Cerrar sesión
-            </button>
-          </li>
-        </ul>
-      </nav>
+  <nav className="sidebar-nav bg-dark text-white p-3" style={{ minWidth: "220px" }}>
+  <h4 className="text-uppercase mb-4 text-center">ARMADIRIQUE</h4>
+  <ul className="nav flex-column">
+    {[
+      { label: "Inicio", key: "inicio" },
+      { label: "Gestión de Usuarios", key: "usuarios" },
+      { label: "Gestión de Productos", key: "productos" },
+      { label: "Gestión de Pedidos", key: "pedidos" },
+      { label: "Inventario", key: "inventario" },
+      { label: "Producción", key: "produccion" },
+      { label: "Reportes", key: "reportes" },
+      { label: "Configuración", key: "configuracion" },
+    ].map((item) => (
+      <li key={item.key} className="nav-item">
+        <button
+          className={`nav-link btn btn-link text-start w-100 ${
+            vistaActual === item.key ? "active" : ""
+          }`}
+          onClick={() => setVistaActual(item.key)}
+        >
+          {item.label}
+        </button>
+      </li>
+    ))}
+    <li className="nav-item mt-4">
+      <button
+        onClick={handleLogout}
+        className="btn btn-sm btn-outline-light w-100"
+      >
+        Cerrar sesión
+      </button>
+    </li>
+  </ul>
+</nav>
+
 
       {/* Main Content */}
       <main className="flex-grow-1 bg-light p-4 overflow-auto">
