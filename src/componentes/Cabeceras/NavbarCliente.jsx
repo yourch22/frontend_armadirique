@@ -62,6 +62,8 @@ const handleLogout = () => {
                                     <Nav.Link href="/inicio">Inicio</Nav.Link>
                                     <Nav.Link href="/catalogo">Catálogo</Nav.Link>
                                     <Nav.Link href="/contacto">Nosotros/Contacto</Nav.Link>
+                                    <Nav.Link href="">Realizar Pago</Nav.Link>
+
                                 </Nav>
                             </Navbar.Collapse>
         
