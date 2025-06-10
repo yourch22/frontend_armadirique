@@ -158,15 +158,14 @@ const DashboardCliente = () => {
             }}>
 
               <div>
-               <Link to="#">
-             <img
-                src={`http://localhost:8080/uploads/${prod.imagenUrl}`}
-                 alt={prod.nombre}
-                   style={{ width: '20vh' }}
-               />
-               </Link>
+                <Link to="#">
+                  <img
+                      src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`} // ¡Añade /api/v1!
+                      alt={prod.nombre}
+                      style={{ width: '20vh' }}
+                  />
+                </Link>
               </div>
-              
               <div style={{ flex: 1, marginLeft: '15px' }}>
                 <Link to="#" style={{
                   textDecoration: 'none',
