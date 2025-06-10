@@ -112,7 +112,7 @@ function Vista() {
                         }}> 
                         {/* imagen*/}
                         <div style={{width:'50%',alignSelf:'center'}}>
-                            <img src={`/imgMuebles/${producto.imagenUrl}.jpg`} style={{height:'70%',objectFit:'cover'}}alt="" />
+                            <img src={`/imgMuebles/${producto.imagenUrl}.jpg`} style={{width:'30rem',objectFit:'cover'}}alt="" />
                         </div>
 
                         {/* info*/}

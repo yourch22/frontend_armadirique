@@ -1,89 +1,125 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from 'react';
 
-const API_URL = "http://localhost:8080/api/v1/carrito";
+const Carrito = () => {
+  const [carrito, setCarrito] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
 
-function Carrito() {
-  const [items, setItems] = useState([]);
-  const [productoId, setProductoId] = useState("");
-  const [cantidad, setCantidad] = useState(1);
+  const [productos, setProductos] = useState([]);
 
-  // Cargar productos del carrito al iniciar
-  useEffect(() => {
-    fetch("http://localhost:8080/api/v1/carrito")
-      .then(res => res.json())
-      .then(data => setItems(data));
+    useEffect(() => {
+      fetch('http://localhost:8080/api/v1/productos') // Usa tu URL real
+        .then(res => res.json())
+        .then(data => setProductos(data))
+        .catch(err => console.error('Error:', err));
+    }, []);
+
+
+
+
+  const RecargarCarrito = () => {
+    setCargando(true); // <- Agrega esto
+    fetch('http://localhost:8080/api/v1/carrito/1')
+      .then((response) => {
+        if (!response.ok) throw new Error('Error al obtener el carrito');
+        return response.json();
+      })
+      .then((data) => {
+        setCarrito(data);
+        setCargando(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setCargando(false);
+      });
+  };
+
+
+useEffect(() => {
+    RecargarCarrito();
   }, []);
 
-  // Agregar producto
-  const agregarProducto = () => {
-    if (!productoId) return alert("Ingresa ID del producto");
 
-    // Aquí deberías obtener los datos del producto,
-    // para el ejemplo usamos sólo el id y nombre dummy
-    const producto = {
-      id: Number(productoId),
-      nombre: "Producto " + productoId,
-      precio: 10.0,
-    };
+  if (cargando) return <p>Cargando carrito...</p>;
+  if (error) return <p>Error: {error}</p>;
 
-    fetch(`${"http://localhost:8080/api/v1/carrito"}/agregar?cantidad=${cantidad}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(producto),
+const agregarAlCarrito = (productoId) => {
+    fetch(`http://localhost:8080/api/v1/carrito/1/agregar/${productoId}?cantidad=1`, {
+      method: 'POST'
     })
-      .then(() => {
-        // Recargar carrito después de agregar
-        return fetch("http://localhost:8080/api/v1/carrito").then(res => res.json());
+    .then(() => RecargarCarrito())
+    .catch(err => console.error('Error al agregar:', err));
+  };
+
+  const eliminarProducto = (productoId) => {
+
+    fetch(`http://localhost:8080/api/v1/carrito/1/eliminar/${productoId}`, {
+      method: 'DELETE'
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Error al eliminar el producto');
+        return res.json();
       })
-      .then(data => setItems(data));
+      .then(data => {
+        setCarrito(data.items); // Actualiza el carrito con los nuevos datos
+      })
+        .then(() => RecargarCarrito())
+      .catch(err => console.error(err));
   };
+const vaciarCarrito = () => {
+  fetch('http://localhost:8080/api/v1/carrito/1/vaciar', {
+    method: 'DELETE'
+  })
+    .then(() => RecargarCarrito())
+    .catch(err => console.error('Error al vaciar el carrito:', err));
+};
+const actualizarCantidad = (productoId, nuevaCantidad) => {
+  if (nuevaCantidad < 1) return; // No permitir menos de 1
 
-  // Eliminar producto
-  const eliminarProducto = (id) => {
-    fetch(`${"http://localhost:8080/api/v1/carrito"}/eliminar/${id}`, { method: "DELETE" })
-      .then(() => fetch(API_URL))
-      .then(res => res.json())
-      .then(data => setItems(data));
-  };
+  fetch(`http://localhost:8080/api/v1/carrito/1/actualizar/${productoId}?cantidad=${nuevaCantidad}`, {
+    method: 'PUT'
+  })
+    .then(() => RecargarCarrito())
+    .catch(err => console.error('Error al actualizar cantidad:', err));
+};
 
-  // Vaciar carrito
-  const vaciarCarrito = () => {
-    fetch(`${"http://localhost:8080/api/v1/carrito"}/vaciar`, { method: "DELETE" })
-      .then(() => fetch(API_URL))
-      .then(res => res.json())
-      .then(data => setItems(data));
-  };
+
 
   return (
     <div>
-      <h2>Carrito de Compras</h2>
-      <div>
-        <input
-          type="number"
-          placeholder="ID Producto"
-          value={productoId}
-          onChange={(e) => setProductoId(e.target.value)}
-        />
-        <input
-          type="number"
-          min="1"
-          placeholder="Cantidad"
-          value={cantidad}
-          onChange={(e) => setCantidad(Number(e.target.value))}
-        />
-        <button onClick={agregarProducto}>Agregar</button>
-        <button onClick={vaciarCarrito}>Vaciar Carrito</button>
-      </div>
-      <ul>
-        {items.map(({ producto, cantidad }) => (
-          <li key={producto.id}>
-            {producto.nombre} - ${producto.precio} x {cantidad}
-            <button onClick={() => eliminarProducto(producto.id)}>Eliminar</button>
-          </li>
-        ))}
-      </ul>
+        <h2>Carrito de Compras</h2>
+        <button onClick={() => agregarAlCarrito(1)}>Agregar producto 1</button>
+        <button onClick={vaciarCarrito}>Vaciar carrito</button>
+
+
+        {!carrito.items || carrito.items.length === 0 ? (
+                <p>El carrito está vacío.</p>
+
+              ) : (
+                <ul>
+                  {carrito.items.map((item) => (
+                    <li key={item.id}>
+                        <button onClick={() => actualizarCantidad(item.producto.productoId, item.cantidad - 1)}>-</button>
+                        <button onClick={() => actualizarCantidad(item.producto.productoId, item.cantidad + 1)}>+</button>
+                      {item.producto.nombre} - Cantidad: {item.cantidad}
+                      <button onClick={() => eliminarProducto(item.producto.productoId)}>Eliminar {item.producto.productoId}</button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+      <h2>agregar productos</h2>
+      {productos.map(producto => (
+              <div key={producto.idProducto}>
+                <h3>{producto.nombre} Id={producto.idProducto}</h3>
+                <p>{producto.descripcion}</p>
+                <p>Precio: {producto.precio}</p>
+                <button onClick={() => agregarAlCarrito(producto.idProducto)}>Agregar al carrito</button>
+
+              </div>
+            ))}
     </div>
   );
-}
+};
 
 export default Carrito;

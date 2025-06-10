@@ -75,6 +75,8 @@ const handleSubmit = async (e) => {
 
     const data = await response.json();
     localStorage.setItem('token', data.token);
+    console.log('Token guardado:', data.token);
+
 
     // Obtener usuario actual
     const userResponse = await fetch('http://localhost:8080/api/v1/auth/actual-usuario', {

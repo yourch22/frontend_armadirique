@@ -58,6 +58,7 @@ function Catalogo() {
     }, []);
 
     return (
+
         <div style={{
             minHeight: '100vh',
             paddingTop: '60px',
@@ -96,9 +97,15 @@ function Catalogo() {
                     </Navbar.Collapse>
 
                     <div style={{ display: 'flex' }}>
-                        <FaSearch style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                        <FaShoppingCart style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                        <FaUser style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
+                        <Link to="#">
+                            <FaSearch style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
+                        </Link>
+                        <Link to="/carrito">
+                            <FaShoppingCart style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
+                        </Link>
+                        <Link to="#">
+                            <FaUser style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
+                        </Link>
                     </div>
                 </Container>
             </Navbar>

@@ -10,6 +10,7 @@ import Catalogo from './componentes/Catalogo/Catalogo';
 import Inicio from './componentes/Inicio/Inicio';
 import Vista from './componentes/Vista/Vista';
 import Carrito from './componentes/Carrito/Carrito';
+import Testing from './componentes/Test/Testin';
 
 import './App.css';
 
@@ -30,6 +31,7 @@ function App() {
           <Route path="/inicio" element={<Inicio />} />
           <Route path="/vista/:id" element={<Vista />} />
           <Route path="/carrito" element={<Carrito />} />
+          <Route path="/testing" element={<Testing />} />
 
           <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
