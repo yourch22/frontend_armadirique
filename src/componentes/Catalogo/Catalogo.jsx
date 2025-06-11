@@ -1,25 +1,9 @@
 // Importaciones necesarias
-import React, { useEffect, useState } from 'react';
-import Carrito from '../Carrito/Carrito';
-import { useCarrito } from '../../context/CarritoContext';
 import React, { useState, useEffect } from 'react';
+import { useCarrito } from '../../context/CarritoContext';
 import NavbarCliente from "../Cabeceras/NavbarCliente"
 import PieDePagina from '../Cabeceras/PieDePagina'
 
-import {
-  Container,
-  Navbar,
-  Nav,
-  Offcanvas,
-  Dropdown,
-} from "react-bootstrap";
-import {
-  FaBars,
-  FaUser,
-  FaSearch,
-  FaShoppingCart,
-  FaTimes,
-} from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 // URL base de tu API
@@ -28,37 +12,34 @@ const API_BASE_URL = 'http://localhost:8080/api/v1';
 
 function Catalogo() {
   //const [showSidebar, setShowSidebar] = useState(false);
-  const { agregarAlCarrito, carrito } = useCarrito();
+  const { agregarAlCarrito} = useCarrito();
 
-
-  const totalItems = carrito?.items?.length || 0;
-  const [showSidebar, setShowSidebar] = useState(false);
   const [isHovered, setIsHovered] = useState(null);
   const [isHoveredButton, setIsHoveredButton] = useState(null);
 
-      const [productos, setProductos] = useState([]);
-      const [loading, setLoading] = useState(true);
-      const [error, setError] = useState(null);
-       // useEffect para obtener los productos de la API
-    useEffect(() => {
-        const fetchProductos = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/productos`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setProductos(data);
-            } catch (error) {
-                console.error("Error fetching products:", error);
-                setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
-            } finally {
-                setLoading(false);
-            }
-        };
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  // useEffect para obtener los productos de la API
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/productos`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setProductos(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        fetchProductos();
-    }, []);
+    fetchProductos();
+  }, []);
   return (
     <div
       style={{
@@ -67,7 +48,7 @@ function Catalogo() {
         position: "relative",
       }}
     >
-      <NavbarCliente/>
+      <NavbarCliente />
 
       {/*Cuerpo principal de la pagina */}
       <div
@@ -137,7 +118,7 @@ function Catalogo() {
               {/*Imagen*/}
               <div>
                 <Link to="#">
-                  <img src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`} style={{ width: "20vh" }}></img>
+                  <img src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`} alt={`${prod.imagenUrl}`} style={{ width: "20vh" }}></img>
                 </Link>
               </div>
               {/*Nombre y descripcion*/}
@@ -204,7 +185,7 @@ function Catalogo() {
           Barra Derecha
         </div>
       </div>
-      <PieDePagina/>
+      <PieDePagina />
     </div>
   );
 }

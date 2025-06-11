@@ -1,120 +1,47 @@
 // Importaciones necesarias
 import React, { useEffect, useState } from "react";
-import Carrito from '../Carrito/Carrito';
-
 import { useCarrito } from '../../context/CarritoContext';
-
 import { useParams } from "react-router-dom";
-import {
-    Container,
-    Navbar,
-    Nav,
-    Offcanvas
-} from 'react-bootstrap';
-import {
-    FaBars,
-    FaUser,
-    FaSearch,
-    FaShoppingCart,
+import NavbarCliente from "../Cabeceras/NavbarCliente";
+import PieDePagina from '../Cabeceras/PieDePagina';
 
-    FaTimes
-} from 'react-icons/fa';
-
-// Definición del componente
+const API_BASE_URL = 'http://localhost:8080/api/v1';
 
 function Vista() {
 
-    const { agregarAlCarrito, carrito } = useCarrito();
+    const { agregarAlCarrito } = useCarrito();
 
-
-    const [showSidebar, setShowSidebar] = useState(false);
-    const [carritoVisible, setCarritoVisible] = useState(false);
-
-    const toggleCarrito = () => {
-        setCarritoVisible(!carritoVisible);
-    };
-
-    const totalItems = carrito?.items?.length || 0;
-
-
+    const [productos, setProductos] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const { id } = useParams();
-    const [prod, setProd] = useState([]);
+    // useEffect para obtener los productos de la API
     useEffect(() => {
-        fetch(`http://localhost:8080/api/v1/productos/${id}`)
-            .then((res) => res.json())
-            .then((data) => setProd(data));
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    }, [id]);
+        const fetchProductos = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/productos/${id}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setProductos(data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
+            } finally {
+                setLoading(false);
+            }
+        };
 
-
+        fetchProductos();
+    }, []);
     return (
         <div style={{
             minHeight: '100vh',
             paddingTop: '60px',
             position: 'relative'
         }}>
-            <Carrito carritoVisible={carritoVisible} toggleCarrito={toggleCarrito} />
-            {/* Header/Navbar */}
-            <Navbar bg="light" expand="lg" style={{
-                backgroundColor: '#fff !important',
-                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                position: 'fixed',
-                top: 0,
-                width: '100%',
-                zIndex: 1000
-            }}>
-                <Container fluid>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <FaBars
-                            style={{ fontSize: '1.5rem', cursor: 'pointer', color: '#333', marginRight: '1rem' }}
-                            onClick={() => setShowSidebar(true)}
-                        />
-                        <Navbar.Brand href="#" style={{
-                            fontWeight: 700,
-                            fontSize: '1.5rem',
-                            color: '#333'
-                        }}>Armadirique</Navbar.Brand>
-                    </div>
-
-                    <Navbar.Collapse id="basic-navbar-nav" style={{ justifyContent: 'center' }}>
-                        <Nav style={{ margin: '0 auto' }}>
-                            <Nav.Link href="/Inicio">Inicio</Nav.Link>
-                            <Nav.Link href="/catalogo">Catálogo</Nav.Link>
-                            <Nav.Link href="#">Contacto</Nav.Link>
-                            <Nav.Link href="#">Nosotros</Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
-
-                    <div style={{ display: 'flex' }}>
-                        <FaSearch style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-
-                        <FaShoppingCart className="icono-carrito" style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }}
-                            onClick={toggleCarrito} />{totalItems > 0 && (<span className="" >{totalItems}</span>)}
-
-                        <FaUser style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                    </div>
-                </Container>
-            </Navbar>
-            {/* Sidebar/Menú desplegable */}
-            <Offcanvas show={showSidebar} onHide={() => setShowSidebar(false)} placement="start" style={{ width: '250px' }}>
-                <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>
-                        <FaTimes
-                            style={{ fontSize: '1.5rem', cursor: 'pointer' }}
-                            onClick={() => setShowSidebar(false)}
-                        />
-                    </Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                    <Nav className="flex-column">
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Inicio</Nav.Link>
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Catálogo</Nav.Link>
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Contacto</Nav.Link>
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Nosotros</Nav.Link>
-                    </Nav>
-                </Offcanvas.Body>
-            </Offcanvas>
-
+            <NavbarCliente />
             {/* main content*/}
             <main style={{
                 padding: '4rem 8rem'
@@ -129,20 +56,20 @@ function Vista() {
                 }}>
                     {/* imagen*/}
                     <div style={{ width: '50%', alignSelf: 'center' }}>
-                        <img src={`/imgMuebles/${prod.imagenUrl}.jpg`} style={{ width: '30rem', objectFit: 'cover' }} alt="" />
+                        <img src={`http://localhost:8080/api/v1/uploads/${productos.imagenUrl}`} style={{ width: '30rem', objectFit: 'cover' }} alt="" />
                     </div>
 
                     {/* info*/}
                     <div style={{ width: '50%', margin: '0rem 2rem' }}>
                         {/* nombre*/}
                         <div style={{ fontWeight: 'bold', fontSize: '1.3rem', margin: '1rem 0rem' }}>
-                            {prod.nombre}
+                            {productos.nombre}
                         </div>
                         <hr />
                         {/* descripcion*/}
                         <div style={{ margin: '2rem 0rem' }}>
                             <div style={{ fontWeight: 'bold' }}>Descripcion:</div>
-                            <div style={{}}>{prod.descripcion}</div>
+                            <div>{productos.descripcion}</div>
                         </div>
                         {/* estilos*/}
                         <div style={{ margin: '2rem 0rem' }}>
@@ -151,16 +78,16 @@ function Vista() {
                         </div >
                         {/* precio*/}
                         <div style={{ margin: '2rem 2rem', textAlign: 'right' }}>
-                            <div style={{ fontWeight: 'bold', fontSize: '2rem' }}>S./{prod.precio}</div>
+                            <div style={{ fontWeight: 'bold', fontSize: '2rem' }}>S./{productos.precio}</div>
                         </div>
                         {/* boton*/}
                         <div style={{ margin: '1rem 2rem', textAlign: 'right' }}>
-                            <button style={{ height: '3rem', width: '12rem' }} onClick={(e) => { e.preventDefault(); agregarAlCarrito(prod.idProducto) }}>ANADIR AL CARRITO</button>
+                            <button style={{ height: '3rem', width: '12rem' }} onClick={(e) => { e.preventDefault(); agregarAlCarrito(productos.idProducto) }}>ANADIR AL CARRITO</button>
                         </div>
                         {/* stock*/}
                         <div>
                             <div style={{ fontWeight: 'bold' }}>Stock:
-                                <span style={{ fontWeight: 'normal' }}> {prod.stock}</span>
+                                <span style={{ fontWeight: 'normal' }}> {productos.stock}</span>
                             </div>
                         </div>
 
@@ -170,10 +97,9 @@ function Vista() {
 
             </main>
 
-
+            <PieDePagina />
         </div>
     );
 }
 
-// Exportación del componente
 export default Vista;

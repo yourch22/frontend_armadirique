@@ -1,4 +1,3 @@
-// src/context/CarritoContext.js
 import { createContext, useContext, useState, useEffect,useCallback } from 'react';
 
 const CarritoContext = createContext();
@@ -7,7 +6,6 @@ export const CarritoProvider = ({ children }) => {
   const [carrito, setCarrito] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
-
 
   const RecargarCarrito= useCallback(() => {
     setCargando(true);
@@ -61,8 +59,6 @@ export const CarritoProvider = ({ children }) => {
     useEffect(() => {
     RecargarCarrito();
   }, [RecargarCarrito]);
-
-
 
   return (
     <CarritoContext.Provider

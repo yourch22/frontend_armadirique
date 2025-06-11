@@ -2,16 +2,13 @@ import React, { } from 'react';
 import './carrito-estilos.css';
 import { useCarrito } from '../../context/CarritoContext';
 
-
 const Carrito = ({ carritoVisible, toggleCarrito }) => {
 
   const {
     carrito,
-
     eliminarProducto,
     vaciarCarrito,
     actualizarCantidad,
-
   } = useCarrito();
 
   if (!carrito) return null;
@@ -40,7 +37,7 @@ const Carrito = ({ carritoVisible, toggleCarrito }) => {
                 <div className='item' key={item.id}>
                   <div className='seccion-izquierda'>
                     <div className='marco-miniatura'>
-                      <img className='producto-miniatura' src={`/imgMuebles/${item.producto.imagenUrl}.jpg`} alt="" />
+                      <img className='producto-miniatura' src={`http://localhost:8080/api/v1/uploads/${item.producto.imagenUrl}`} alt="" />
                     </div>
                   </div>
                   <div className='seccion-central'>
@@ -70,18 +67,6 @@ const Carrito = ({ carritoVisible, toggleCarrito }) => {
           </div>
 
         )}
-        {/*
-      <h2>agregar productos</h2>
-      {productos.map(producto => (
-        <div key={producto.idProducto}>
-          <h3>{producto.nombre} Id={producto.idProducto}</h3>
-          <p>{producto.descripcion}</p>
-          <p>Precio: {producto.precio}</p>
-          <button onClick={() => agregarAlCarrito(producto.idProducto)}>Agregar al carrito</button>
-
-        </div>
-      ))}
-    */}
       </div>
     </div>
   );
