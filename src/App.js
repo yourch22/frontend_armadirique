@@ -11,6 +11,8 @@ import Inicio from './componentes/Inicio/Inicio';
 import Vista from './componentes/Vista/Vista';
 import Carrito from './componentes/Carrito/Carrito';
 import Testing from './componentes/Test/Testin';
+import Contacto from './componentes/Contacto/Contacto'
+
 
 import './App.css';
 
@@ -24,8 +26,8 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/registrar" element={<Registrar />} />
-          <Route path="/dashboardadmin" element={<DashboardAdmin />} />
-          <Route path="/dashboardcliente" element={<DashboardCliente />} />
+           // <Route path="/dashboardadmin" element={<DashboardAdmin />} />
+            <Route path="/dashboardcliente" element={<DashboardCliente />} /> 
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/catalogo" element={<Catalogo />} />
           <Route path="/inicio" element={<Inicio />} />
@@ -34,6 +36,9 @@ function App() {
           <Route path="/testing" element={<Testing />} />
 
           <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="/contacto" element={<Contacto />} />
+
+          <Route path="*" element={<Navigate to="/inicio" />} />
         </Routes>
       </Router>
 

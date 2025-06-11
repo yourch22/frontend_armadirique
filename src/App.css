@@ -372,3 +372,46 @@
     padding: 20px;
   }
 }
+
+
+.navbar{
+  background-color: #adadad;
+  padding: 1rem 2rem;
+  h3{
+    color: black;
+  }
+
+}
+
+.sidebar{
+  width: 14rem;
+  height: calc(100vh - 52px);
+  border-right: 1px solid #000000;
+  background-color: #161616;
+
+  ul{
+    list-style: none;
+    padding: 1rem 2rem;
+    li{
+      margin-bottom: 1rem;
+      a{
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.flex{
+  display: flex;
+}
+
+
+.col-9 {
+  margin: 0 auto; 
+  float: none; 
+  display: block; 
+}
+
+.table {
+  width: 100%; 
+}

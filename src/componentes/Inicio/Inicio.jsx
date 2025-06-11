@@ -3,6 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import Carrito from '../Carrito/Carrito';
 import { useCarrito } from '../../context/CarritoContext';
+import React, { useEffect, useState } from 'react';
+import NavbarCliente from "../Cabeceras/NavbarCliente";
+import PieDePagina from '../Cabeceras/PieDePagina';
 import {
     Container,
     Navbar,
@@ -27,117 +30,62 @@ const images = [
     slide1, slide2, slide3
 ];
 
+
+
+// URL base de tu API
+const API_BASE_URL = 'http://localhost:8080/api/v1';
+
 // Definición del componente
 
 function Catalogo() {
-
     const [showSidebar, setShowSidebar] = useState(false);
     const {carrito } = useCarrito();
+    const [productos, setProductos] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     const [index, setIndex] = useState(0);
-    const totalItems = carrito?.items?.length || 0;
+
     const prevSlide = () => {
         setIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
     };
-
     const nextSlide = () => {
         setIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     };
-
-    const [carritoVisible, setCarritoVisible] = useState(false);
-
-    const toggleCarrito = () => {
-        setCarritoVisible(!carritoVisible);
-    };
-    //Cargar productos desde la api
-    const [productos, setProductos] = useState([]);
+     // useEffect para obtener los productos de la API
     useEffect(() => {
-        fetch('http://localhost:8080/api/v1/productos')
-            .then(response => {
-                if (!response.ok) throw new Error('Error al obtener productos');
-                return response.json();
-            })
-            .then(data => {
-                setProductos(data); // Guardamos el array de productos en el estado
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }, []);
+        const fetchProductos = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/productos`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setProductos(data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProductos();
+    }, []); // El array vacío asegura que se ejecute solo una vez al montar el componente
+
 
     return (
-
         <div style={{
             minHeight: '100vh',
-            paddingTop: '60px',
+            paddingTop: '80px',
             position: 'relative'
         }}>
-            <Carrito carritoVisible={carritoVisible} toggleCarrito={toggleCarrito} />
-            {/* Header/Navbar */}
-            <Navbar bg="light" expand="lg" style={{
-                backgroundColor: '#fff !important',
-                boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                position: 'fixed',
-                top: 0,
-                width: '100%',
-                zIndex: 1000
-            }}>
-                <Container fluid>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <FaBars
-                            style={{ fontSize: '1.5rem', cursor: 'pointer', color: '#333', marginRight: '1rem' }}
-                            onClick={() => setShowSidebar(true)}
-                        />
-                        <Navbar.Brand href="#" style={{
-                            fontWeight: 700,
-                            fontSize: '1.5rem',
-                            color: '#333'
-                        }}>Armadirique</Navbar.Brand>
-                    </div>
-
-                    <Navbar.Collapse id="basic-navbar-nav" style={{ justifyContent: 'center' }}>
-                        <Nav style={{ margin: '0 auto' }}>
-                            <Nav.Link href="/Inicio">Inicio</Nav.Link>
-                            <Nav.Link href="/catalogo">Catálogo</Nav.Link>
-                            <Nav.Link href="#">Contacto</Nav.Link>
-                            <Nav.Link href="#">Nosotros</Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
-
-                    <div style={{ display: 'flex' }}>
-                        <Link to="#">
-                            <FaSearch style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                        </Link>
-                        <FaShoppingCart className="icono-carrito" style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }}
-                            onClick={toggleCarrito} />{totalItems > 0 && (<span className="" >{totalItems}</span>)}
-                        <Link to="#">
-                            <FaUser style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                        </Link>
-                    </div>
-                </Container>
-            </Navbar>
-            {/* Sidebar/Menú desplegable */}
-            <Offcanvas show={showSidebar} onHide={() => setShowSidebar(false)} placement="start" style={{ width: '250px' }}>
-                <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>
-                        <FaTimes
-                            style={{ fontSize: '1.5rem', cursor: 'pointer' }}
-                            onClick={() => setShowSidebar(false)}
-                        />
-                    </Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                    <Nav className="flex-column">
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Inicio</Nav.Link>
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Catálogo</Nav.Link>
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Contacto</Nav.Link>
-                        <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Nosotros</Nav.Link>
-                    </Nav>
-                </Offcanvas.Body>
-            </Offcanvas>
-
+<Carrito carritoVisible={carritoVisible} toggleCarrito={toggleCarrito} />
+<NavbarCliente/>
             {/**********************************carroulsse******************************************************* */}
 
-            <div style={{ position: 'relative', width: '100%', height: '400px', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', width: '100%',height:'400px',overflow: 'hidden'}}>
+
                 <img
                     src={images[index]}
                     alt={`Slide ${index + 1}`}
@@ -168,7 +116,6 @@ function Catalogo() {
                 >
                     ‹
                 </button>
-
                 <button
                     onClick={nextSlide}
                     style={{
@@ -186,101 +133,63 @@ function Catalogo() {
                     ›
                 </button>
             </div>
-
-
             {/*******************Cartas muebles productos****************************************/}
             <div style={{ marginTop: '5vh', marginLeft: '15%', marginRight: '15%', marginBottom: '10%' }}>
                 {/**Promociones encabezado */}
                 <div>
                     <h6>Destacados</h6>
-                    <hr />
+                    <hr/>
                 </div>
                 {/*Contenedor Cartas */}
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(5, auto)',
-                    gap: '20px',
-
-                }}>
-                    {/* carta */}
-                    {productos.map((prod) => (
-                        <Link to={`/vista/${prod.idProducto}`} style={{ textDecoration: "none", color: "black" }}>
-                            <div style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                boxShadow: 'inset 0 0 0 1px #c3c3c3',
-                                height: '17rem',
-                                textAlign: 'center',
+                    gap:'20px',
+                    
+                }}>     
+                    {/* carta */}   
+                     {productos.map((prod) => (    
+                        <div key={prod.idProducto} style={{
+                            display:'flex',
+                            flexDirection:'column',
+                            //border:'1px  #c3c3c3',
+                            boxShadow: 'inset 0 0 0 1px #c3c3c3',
+                            
+                            //width:'19%',
+                            //minHeight:'40vh',
+                            
+                            textAlign:'center',
+                            
                             }}>
-                                <div style={{ padding: '5%' }}>{/*Imagen */}
-                                    <img src={`./imgMuebles/${prod.imagenUrl}.jpg`} alt={`mueble${prod.idProducto}`}
-                                        style={{
 
-                                            height: '10rem',
-                                            objectFit: 'cover'
-                                        }} />
-                                </div>
-                                <div style={{ padding: '5%', fontSize: '1rem' }}>{/*Texto */}
-                                    <p style={{ marginBottom: '0.5rem' }}>{prod.nombre}</p>
-                                    <p style={{ marginBottom: '0.5rem' }}>S./{prod.precio}</p>
+                            <div style={{padding:'5%'}}>{/*Imagen */}
+                                <img src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`}  alt={`mueble${prod.nombre}`}
+                                style={{
+                                    //border:'1px solid #c3c3c3',
+                                    width:'90%'
 
-                                </div>
-
-
+                                }}/>
+                            </div>
+                            <div style={{padding:'5%',fontSize:'2.5vh'}}>{/*Texto */}
+                                <p>{prod.nombre}</p>
+                                <p>s/ {prod.precio.toFixed(2)}</p>
 
                             </div>
-                        </Link>
-
+                        </div>
                     ))}
-
-
                 </div>
-
-
             </div>
 
-            <div style={{ backgroundColor: 'black', height: '300px', color: 'white', display: 'flex', alignItems: 'center' }}>
+            <PieDePagina/>
 
-
-
-                <div style={{ flex: 4, textAlign: 'center' }}>
-
-                    <div style={{ fontWeight: 700, fontSize: '1.5rem', marginBottom: '1.5rem' }}>
-                        Armadirique
-                    </div>
-                    Siguenos:
-                    <FaInstagram style={{ fontSize: '1.5rem', color: 'white', cursor: 'pointer', margin: '0 0.5rem' }} />
-                    <FaFacebookF style={{ fontSize: '1.5rem', color: 'white', cursor: 'pointer', margin: '0 0.5rem' }} />
-                    <FaYoutube style={{ fontSize: '1.5rem', color: 'white', cursor: 'pointer', margin: '0 0.5rem' }} />
-
-
-                </div>
-
-
-                <div style={{ flex: 3 }}>
-                    <p><u>Servicio al cliente</u></p>
-                    <p>Terminos y condiciones</p>
-                    <p>Contacto</p>
-                    <p>Comprobante electronico</p>
-                </div>
-                <div style={{ flex: 3 }}>
-                    <p><u>Acerca de:</u></p>
-                    <p>Sobre nosotros</p>
-                    <p>Proceso de diseno</p>
-                    <p>Estudio</p>
-                </div>
-
-            </div>
 
             <Carrito />
 
 
         </div>
 
-
-
     );
 }
 
-// Exportación del componente
+
 export default Catalogo;
