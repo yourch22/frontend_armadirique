@@ -1262,7 +1262,7 @@ const ArmadiqueCheckout = () => {
               <span className="d-inline d-sm-none gradient-text-blue">ARM</span>
             </a>
             <div className="d-flex align-items-center">
-              <button className="btn btn-outline-primary me-3" onClick={() => navigate("/carrito")}>
+              <button className="btn btn-outline-primary me-3" onClick={() => navigate("/inicio")}>
                 <i className="fas fa-arrow-left me-2"></i>
                 Volver al Carrito
               </button>
