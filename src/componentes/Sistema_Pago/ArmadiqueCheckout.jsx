@@ -87,6 +87,7 @@ const ArmadiqueCheckout = () => {
   const mapContainerRef = useRef(null)
   const paypalContainerRef = useRef(null)
   const mapInstanceRef = useRef(null)
+  const leafletLoadedRef = useRef(false)
 
   // Calcular totales
   const calculateTotals = () => {
@@ -181,6 +182,268 @@ const ArmadiqueCheckout = () => {
     handleCustomerChange("phone", numericValue)
   }
 
+  // FUNCIÓN DEL BOTÓN DEL MAPA - COMPLETAMENTE ARREGLADA
+  const handleMapButtonClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    console.log("🗺️ BOTÓN DEL MAPA CLICKEADO!")
+
+    // Forzar la apertura del modal
+    setShowMapModal(true)
+
+    // Debug adicional
+    console.log("Estado del modal:", showMapModal)
+
+    // Mostrar alerta para confirmar que funciona
+    alert("¡Botón del mapa funcionando! Abriendo modal...")
+  }
+
+  // Función para cerrar el modal del mapa
+  const closeMapModal = () => {
+    console.log("🚪 Cerrando modal del mapa")
+    setShowMapModal(false)
+    setSearchResults([])
+    setSelectedLocation(null)
+    setSearchQuery("")
+  }
+
+  // Búsqueda de ubicaciones (MEJORADA)
+  const searchLocation = async (query) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}, Peru&limit=5&addressdetails=1`,
+      )
+
+      if (!response.ok) throw new Error("Error en la búsqueda")
+
+      const data = await response.json()
+
+      const results = data.map((item) => ({
+        lat: Number.parseFloat(item.lat),
+        lng: Number.parseFloat(item.lon),
+        address: item.display_name.split(",").slice(0, 3).join(","),
+        district: item.address?.suburb || item.address?.city_district || item.address?.neighbourhood || "Lima",
+        department: item.address?.state || "Lima",
+        zipCode: item.address?.postcode || "15001",
+        fullData: item,
+      }))
+
+      setMapMarkers(results)
+      if (results.length > 0) {
+        setMapCenter([results[0].lat, results[0].lng])
+        setMapZoom(15)
+        // Actualizar el mapa si está inicializado
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.setView([results[0].lat, results[0].lng], 15)
+        }
+      }
+
+      return results
+    } catch (error) {
+      console.error("Error en búsqueda:", error)
+      return []
+    }
+  }
+
+  // Cargar Leaflet de forma segura (ARREGLADO)
+  const loadLeaflet = () => {
+    return new Promise((resolve) => {
+      if (window.L && leafletLoadedRef.current) {
+        resolve(window.L)
+        return
+      }
+
+      // Limpiar scripts anteriores
+      const existingLink = document.querySelector('link[href*="leaflet"]')
+      const existingScript = document.querySelector('script[src*="leaflet"]')
+
+      if (existingLink) existingLink.remove()
+      if (existingScript) existingScript.remove()
+
+      // Cargar CSS de Leaflet
+      const link = document.createElement("link")
+      link.rel = "stylesheet"
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      link.integrity = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      link.crossOrigin = ""
+      document.head.appendChild(link)
+
+      // Cargar JS de Leaflet
+      const script = document.createElement("script")
+      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      script.integrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      script.crossOrigin = ""
+      script.onload = () => {
+        leafletLoadedRef.current = true
+        console.log("Leaflet cargado correctamente")
+        resolve(window.L)
+      }
+      script.onerror = (error) => {
+        console.error("Error cargando Leaflet:", error)
+        leafletLoadedRef.current = false
+      }
+      document.head.appendChild(script)
+    })
+  }
+
+  // Inicializar mapa interactivo con Leaflet (COMPLETAMENTE ARREGLADO)
+  const initializeMap = async () => {
+    if (!mapContainerRef.current) {
+      console.log("Contenedor del mapa no encontrado")
+      return
+    }
+
+    console.log("Inicializando mapa...")
+
+    try {
+      // Asegurarnos de que Leaflet esté cargado
+      if (!leafletLoadedRef.current) {
+        console.log("Cargando Leaflet...")
+        await loadLeaflet()
+      }
+
+      // Si ya existe una instancia del mapa, la limpiamos primero
+      if (mapInstanceRef.current) {
+        console.log("Limpiando mapa anterior...")
+        mapInstanceRef.current.remove()
+        mapInstanceRef.current = null
+        window.currentMarker = null
+      }
+
+      // Limpiar el contenedor
+      mapContainerRef.current.innerHTML = ""
+
+      // Crear el mapa
+      console.log("Creando nueva instancia del mapa...")
+      const map = window.L.map(mapContainerRef.current, {
+        center: mapCenter,
+        zoom: mapZoom,
+        zoomControl: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        boxZoom: true,
+        keyboard: true,
+        dragging: true,
+        touchZoom: true,
+      })
+
+      // Agregar tiles
+      window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+      }).addTo(map)
+
+      // Evento de clic en el mapa
+      map.on("click", (e) => {
+        console.log("Clic en el mapa:", e.latlng)
+        const { lat, lng } = e.latlng
+
+        // Si ya existe un marcador, lo eliminamos
+        if (window.currentMarker) {
+          map.removeLayer(window.currentMarker)
+        }
+
+        // Creamos un nuevo marcador
+        window.currentMarker = window.L.marker([lat, lng]).addTo(map)
+
+        // Creamos una nueva ubicación seleccionada
+        const newLocation = {
+          lat,
+          lng,
+          address: `Ubicación seleccionada: ${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+          district: "Lima",
+          department: "Lima",
+          zipCode: "15001",
+        }
+
+        setSelectedLocation(newLocation)
+        console.log("Nueva ubicación seleccionada:", newLocation)
+      })
+
+      // Agregar marcadores existentes
+      if (mapMarkers.length > 0) {
+        console.log("Agregando marcadores:", mapMarkers.length)
+        mapMarkers.forEach((location) => {
+          const marker = window.L.marker([location.lat, location.lng]).addTo(map).bindPopup(location.address)
+
+          marker.on("click", () => {
+            console.log("Marcador clickeado:", location)
+            selectLocation(location)
+          })
+        })
+      }
+
+      mapInstanceRef.current = map
+
+      // Forzar un redimensionamiento del mapa después de que se haya renderizado
+      setTimeout(() => {
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.invalidateSize()
+          console.log("Mapa redimensionado")
+        }
+      }, 300)
+
+      console.log("Mapa inicializado correctamente")
+    } catch (error) {
+      console.error("Error al inicializar el mapa:", error)
+      // Fallback: mostrar mensaje de error
+      if (mapContainerRef.current) {
+        mapContainerRef.current.innerHTML = `
+          <div style="height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; background: #f0f0f0; border-radius: 15px;">
+            <i class="fas fa-map-marker-alt fa-4x text-primary mb-3"></i>
+            <h5>Error al cargar el mapa</h5>
+            <p>Intenta recargar la página</p>
+          </div>
+        `
+      }
+    }
+  }
+
+  const handleMapSearch = async (e) => {
+    e.preventDefault()
+    if (!searchQuery.trim()) return
+
+    setIsSearching(true)
+    try {
+      const results = await searchLocation(searchQuery)
+      setSearchResults(results)
+    } catch (error) {
+      console.error("Error en búsqueda:", error)
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  const selectLocation = (location) => {
+    setSelectedLocation(location)
+    setMapCenter([location.lat, location.lng])
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.setView([location.lat, location.lng], 16)
+
+      // Si ya existe un marcador, lo eliminamos
+      if (window.currentMarker) {
+        mapInstanceRef.current.removeLayer(window.currentMarker)
+      }
+
+      // Creamos un nuevo marcador en la ubicación seleccionada
+      window.currentMarker = window.L.marker([location.lat, location.lng]).addTo(mapInstanceRef.current)
+    }
+  }
+
+  const confirmMapLocation = () => {
+    if (!selectedLocation) return
+
+    setCustomer((prev) => ({
+      ...prev,
+      address: selectedLocation.address,
+      district: selectedLocation.district,
+      department: selectedLocation.department,
+      zipCode: selectedLocation.zipCode,
+    }))
+    setShowMapModal(false)
+  }
+
   // Enviar datos al servidor Python
   const sendDataToPython = async () => {
     const orderNumber = `ARM-${Date.now().toString().slice(-8)}`
@@ -226,190 +489,36 @@ const ArmadiqueCheckout = () => {
     }
   }
 
-  // Manejar envío del formulario
-  const handleSubmitForm = async (e) => {
-    e.preventDefault()
+  // Efecto para cargar Leaflet cuando se monta el componente (ARREGLADO)
+  useEffect(() => {
+    console.log("Componente montado, precargando Leaflet...")
+    loadLeaflet().catch(console.error)
 
-    if (isProcessing) return
-
-    if (!validateAllFields()) {
-      setPaymentStatus({
-        type: "error",
-        message: "Por favor corrige los errores en el formulario",
-      })
-      return
-    }
-
-    setIsProcessing(true)
-    await sendDataToPython()
-    setIsProcessing(false)
-  }
-
-  // Funciones del mapa mejoradas
-  const searchLocation = async (query) => {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}, Peru&limit=5&addressdetails=1`,
-      )
-
-      if (!response.ok) throw new Error("Error en la búsqueda")
-
-      const data = await response.json()
-
-      const results = data.map((item) => ({
-        lat: Number.parseFloat(item.lat),
-        lng: Number.parseFloat(item.lon),
-        address: item.display_name.split(",").slice(0, 3).join(","),
-        district: item.address?.suburb || item.address?.city_district || item.address?.neighbourhood || "Lima",
-        department: item.address?.state || "Lima",
-        zipCode: item.address?.postcode || "15001",
-        fullData: item,
-      }))
-
-      setMapMarkers(results)
-      if (results.length > 0) {
-        setMapCenter([results[0].lat, results[0].lng])
-        setMapZoom(15)
-        // Actualizar el mapa si está inicializado
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.setView([results[0].lat, results[0].lng], 15)
-        }
+    return () => {
+      // Limpiar el mapa al desmontar el componente
+      if (mapInstanceRef.current) {
+        console.log("Limpiando mapa al desmontar...")
+        mapInstanceRef.current.remove()
+        mapInstanceRef.current = null
+        window.currentMarker = null
       }
-
-      return results
-    } catch (error) {
-      console.error("Error en búsqueda:", error)
-      return []
     }
-  }
+  }, [])
 
-  const handleMapSearch = async (e) => {
-    e.preventDefault()
-    if (!searchQuery.trim()) return
-
-    setIsSearching(true)
-    try {
-      const results = await searchLocation(searchQuery)
-      setSearchResults(results)
-    } catch (error) {
-      console.error("Error en búsqueda:", error)
-    } finally {
-      setIsSearching(false)
-    }
-  }
-
-  const selectLocation = (location) => {
-    setSelectedLocation(location)
-    setMapCenter([location.lat, location.lng])
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.setView([location.lat, location.lng], 16)
-    }
-  }
-
-  const confirmMapLocation = () => {
-    if (!selectedLocation) return
-
-    setCustomer((prev) => ({
-      ...prev,
-      address: selectedLocation.address,
-      district: selectedLocation.district,
-      department: selectedLocation.department,
-      zipCode: selectedLocation.zipCode,
-    }))
-    setShowMapModal(false)
-  }
-
-  // Inicializar mapa interactivo con Leaflet
-  const initializeMap = () => {
-    if (!mapContainerRef.current) return
-
-    // Si ya existe una instancia del mapa, la limpiamos primero
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.remove()
-      mapInstanceRef.current = null
-    }
-
-    // Verificar si Leaflet ya está cargado
-    if (window.L) {
-      // Crear el mapa directamente
-      const L = window.L
-      const map = L.map(mapContainerRef.current).setView(mapCenter, mapZoom)
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "© OpenStreetMap contributors",
-      }).addTo(map)
-
-      // Marcador para ubicación seleccionada
-      let marker = null
-
-      map.on("click", (e) => {
-        const { lat, lng } = e.latlng
-
-        if (marker) {
-          map.removeLayer(marker)
-        }
-
-        marker = L.marker([lat, lng]).addTo(map)
-
-        const newLocation = {
-          lat,
-          lng,
-          address: `Ubicación seleccionada: ${lat.toFixed(6)}, ${lng.toFixed(6)}`,
-          district: "Lima",
-          department: "Lima",
-          zipCode: "15001",
-        }
-
-        setSelectedLocation(newLocation)
-      })
-
-      // Agregar marcadores existentes
-      if (mapMarkers.length > 0) {
-        mapMarkers.forEach((location) => {
-          L.marker([location.lat, location.lng])
-            .addTo(map)
-            .bindPopup(location.address)
-            .on("click", () => selectLocation(location))
-        })
-      }
-
-      mapInstanceRef.current = map
-    } else {
-      // Cargar Leaflet dinámicamente
-      const link = document.createElement("link")
-      link.rel = "stylesheet"
-      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      document.head.appendChild(link)
-
-      const script = document.createElement("script")
-      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      script.onload = () => {
-        if (mapContainerRef.current) {
-          initializeMap() // Llamar recursivamente cuando se cargue
-        }
-      }
-      document.head.appendChild(script)
-    }
-  }
-
-  // Efecto para inicializar el mapa cuando se abre el modal
+  // Efecto para inicializar el mapa cuando se abre el modal (ARREGLADO)
   useEffect(() => {
     if (showMapModal && mapContainerRef.current) {
-      // Pequeño retraso para asegurar que el DOM esté listo
+      console.log("Modal del mapa abierto, inicializando...")
+      // Retraso para asegurar que el DOM esté listo
       const timer = setTimeout(() => {
         initializeMap()
-      }, 300)
+      }, 500)
 
       return () => {
         clearTimeout(timer)
-        // Limpiar el mapa al cerrar el modal
-        if (mapInstanceRef.current) {
-          mapInstanceRef.current.remove()
-          mapInstanceRef.current = null
-        }
       }
     }
-  }, [showMapModal])
+  }, [showMapModal, mapCenter, mapZoom])
 
   // Inicializar PayPal
   const initializePayPal = () => {
@@ -664,7 +773,7 @@ const ArmadiqueCheckout = () => {
 
   return (
     <>
-      {/* Estilos CSS completos mejorados */}
+      {/* Estilos CSS ARREGLADOS para el botón del mapa */}
       <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
@@ -1167,27 +1276,85 @@ const ArmadiqueCheckout = () => {
           z-index: 2;
         }
 
+        /* BOTÓN DEL MAPA - ESTILOS ARREGLADOS */
         .btn-map-search {
-          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-          border: none;
-          transition: all 0.4s ease;
-          border-radius: 15px;
-          font-weight: 600;
-          box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-          color: white;
-          padding: 12px 20px;
-          font-size: 14px;
-          min-width: 100px;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+          border: none !important;
+          transition: all 0.4s ease !important;
+          border-radius: 15px !important;
+          font-weight: 600 !important;
+          box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4) !important;
+          color: white !important;
+          padding: 12px 20px !important;
+          font-size: 14px !important;
+          min-width: 100px !important;
+          height: 100% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          cursor: pointer !important;
+          position: relative !important;
+          z-index: 10 !important;
+          pointer-events: auto !important;
+          user-select: none !important;
+          -webkit-user-select: none !important;
+          -moz-user-select: none !important;
+          -ms-user-select: none !important;
         }
 
         .btn-map-search:hover {
+          transform: translateY(-3px) scale(1.05) !important;
+          box-shadow: 0 15px 35px rgba(16, 185, 129, 0.6) !important;
+          background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+          color: white !important;
+        }
+
+        .btn-map-search:active {
+          transform: translateY(-1px) scale(1.02) !important;
+          box-shadow: 0 10px 25px rgba(16, 185, 129, 0.8) !important;
+        }
+
+        .btn-map-search:focus {
+          outline: none !important;
+          box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3) !important;
+        }
+
+        /* Asegurar que el contenedor del botón no interfiera */
+        .d-flex.gap-2 {
+          position: relative;
+          z-index: 1;
+        }
+
+        .btn-success-premium {
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+          border: none;
+          border-radius: 18px;
+          font-weight: 700;
+          box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+          color: white;
+          padding: 12px 24px;
+          transition: all 0.4s ease;
+        }
+
+        .btn-success-premium:hover {
           transform: translateY(-3px) scale(1.05);
-          box-shadow: 0 15px 35px rgba(16, 185, 129, 0.6);
-          background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+          box-shadow: 0 20px 40px rgba(16, 185, 129, 0.6);
+        }
+
+        .btn-danger-premium {
+          background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+          border: none;
+          border-radius: 18px;
+          font-weight: 700;
+          box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+          color: white;
+          padding: 12px 24px;
+          transition: all 0.4s ease;
+        }
+
+        .btn-danger-premium:hover {
+          transform: translateY(-3px) scale(1.05);
+          box-shadow: 0 20px 40px rgba(239, 68, 68, 0.6);
         }
 
         /* Responsive Design */
@@ -1462,7 +1629,7 @@ const ArmadiqueCheckout = () => {
                             <button
                               type="button"
                               className="btn btn-map-search"
-                              onClick={() => setShowMapModal(true)}
+                              onClick={handleMapButtonClick}
                               title="Buscar en mapa"
                             >
                               <i className="fas fa-map-marker-alt me-1"></i>
@@ -1593,9 +1760,7 @@ const ArmadiqueCheckout = () => {
                               <i className="fas fa-mobile-alt me-3"></i>
                               PAGO CON YAPE - DIEGO
                             </h5>
-                            <div className="text-center mb-4">
-                              
-                            </div>
+                            <div className="text-center mb-4"></div>
                             <div className="row align-items-center">
                               <div className="col-md-6 text-center mb-4">
                                 <div className="qr-frame yape">
@@ -1642,9 +1807,7 @@ const ArmadiqueCheckout = () => {
                               <i className="fas fa-qrcode me-3"></i>
                               PAGO CON PLIN - ERICK
                             </h5>
-                            <div className="text-center mb-4">
-                              
-                            </div>
+                            <div className="text-center mb-4"></div>
                             <div className="row align-items-center">
                               <div className="col-md-6 text-center mb-4">
                                 <div className="qr-frame plin">
@@ -1821,7 +1984,7 @@ const ArmadiqueCheckout = () => {
             onClick={(e) => {
               // Solo cerrar si se hace clic fuera del panel
               if (e.target.className === "map-overlay") {
-                setShowMapModal(false)
+                closeMapModal()
               }
             }}
           >
@@ -1931,7 +2094,7 @@ const ArmadiqueCheckout = () => {
                   <i className="fas fa-check me-2"></i>
                   CONFIRMAR DIRECCIÓN
                 </button>
-                <button className="btn btn-secondary btn-lg" onClick={() => setShowMapModal(false)}>
+                <button className="btn btn-secondary btn-lg" onClick={closeMapModal}>
                   <i className="fas fa-times me-2"></i>
                   CANCELAR
                 </button>
