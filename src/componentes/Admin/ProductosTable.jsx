@@ -66,9 +66,9 @@ export default function ProductosTable({
                 <td colSpan="9" className="text-center">No hay productos disponibles</td>
               </tr>
             ) : (
-              productos.map((prod) => (
+              productos.map((prod,item) => (
                 <tr key={prod.idProducto}>
-                  <td>{prod.idProducto}</td>
+                  <td>{item + 1}</td>
                   <td>{prod.nombre}</td>
                   <td>{prod.descripcion}</td>
                   <td>S/ {prod.precio.toFixed(2)}</td>

@@ -25,12 +25,24 @@ import {
 import { Link } from "react-router-dom";
 import { left } from "@popperjs/core";
 
+import Carrito from '../Carrito/Carrito';
+import { useCarrito } from '../../context/CarritoContext';
+
 function NavbarCliente(){
 const [showSidebar, setShowSidebar] = useState(false);
 const handleLogout = () => {
     localStorage.removeItem("token");
     window.location.href = "/login";
   };
+//Variable para el Carrito
+const {carrito } = useCarrito();
+const totalItems = carrito?.items?.length || 0;
+const [carritoVisible, setCarritoVisible] = useState(false);
+const toggleCarrito = () => {
+    setCarritoVisible(!carritoVisible);
+};
+
+
 
 
     return(
@@ -44,6 +56,9 @@ const handleLogout = () => {
                         width: '100%',
                         zIndex: 1000
                     }}>
+                        {/*El componente Carrito ira dentro del componente NavbarCliente*/}
+                        <Carrito carritoVisible={carritoVisible} toggleCarrito={toggleCarrito} />
+                        {/*##############################################################*/}
                         <Container fluid>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <FaBars
@@ -69,7 +84,10 @@ const handleLogout = () => {
         
                             <div style={{ display: 'flex' }}>
                                 <FaSearch style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-                                <FaShoppingCart style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
+                                <FaShoppingCart style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }}
+                                onClick={toggleCarrito}/>{totalItems > 0 && (<span className="" >{totalItems}</span>)}
+
+
                                 <Dropdown align="end">
                                               <Dropdown.Toggle
                                                 variant="link"

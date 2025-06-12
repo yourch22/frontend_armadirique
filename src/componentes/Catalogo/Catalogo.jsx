@@ -1,34 +1,10 @@
 // Importaciones necesarias
 import React, { useState, useEffect } from 'react';
+import { useCarrito } from '../../context/CarritoContext';
 import NavbarCliente from "../Cabeceras/NavbarCliente"
 import PieDePagina from '../Cabeceras/PieDePagina'
 
-import {
-  Container,
-  Form,
-  Button,
-  Card,
-  Row,
-  Col,
-  Alert,
-  Navbar,
-  Nav,
-  FormCheck,
-  Offcanvas,
-  Dropdown,
-} from "react-bootstrap";
-import {
-  FaBars,
-  FaUser,
-  FaSearch,
-  FaShoppingCart,
-  FaFacebook,
-  FaGoogle,
-  FaTimes,
-} from "react-icons/fa";
 import { Link } from "react-router-dom";
-import fondoLogo from "./logo.png";
-import { left } from "@popperjs/core";
 
 // URL base de tu API
 const API_BASE_URL = 'http://localhost:8080/api/v1';
@@ -36,32 +12,34 @@ const API_BASE_URL = 'http://localhost:8080/api/v1';
 
 function Catalogo() {
   //const [showSidebar, setShowSidebar] = useState(false);
+  const { agregarAlCarrito} = useCarrito();
+
   const [isHovered, setIsHovered] = useState(null);
   const [isHoveredButton, setIsHoveredButton] = useState(null);
 
-      const [productos, setProductos] = useState([]);
-      const [loading, setLoading] = useState(true);
-      const [error, setError] = useState(null);
-       // useEffect para obtener los productos de la API
-    useEffect(() => {
-        const fetchProductos = async () => {
-            try {
-                const response = await fetch(`${API_BASE_URL}/productos`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setProductos(data);
-            } catch (error) {
-                console.error("Error fetching products:", error);
-                setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
-            } finally {
-                setLoading(false);
-            }
-        };
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  // useEffect para obtener los productos de la API
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/productos`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setProductos(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        fetchProductos();
-    }, []); 
+    fetchProductos();
+  }, []);
   return (
     <div
       style={{
@@ -70,28 +48,27 @@ function Catalogo() {
         position: "relative",
       }}
     >
-      <NavbarCliente/> 
+      <NavbarCliente />
 
       {/*Cuerpo principal de la pagina */}
       <div
         style={{
           display: "flex",
-          alignItems: "stretch", // 🔑 esto es clave
+          alignItems: "stretch",
           minHeight: "100vh",
           backgroundColor: "#f3f3f3",
         }}
       >
+
         {/* Columna Izquierda */}
         <div
           style={{
             width: "15%",
             backgroundColor: "#ddd",
             display: "flex",
-            //alignItems: 'center',
             justifyContent: "center",
             padding: "20px",
             boxSizing: "border-box",
-            //alignItems:'center'
           }}
         >
           <div
@@ -120,7 +97,7 @@ function Catalogo() {
           {/*Titulo*/}
           <div style={{ margin: "5px 0" }}>
             <h6>Catalogo</h6>
-            Resultados: #
+            Resultados: {productos.length}
           </div>
           {/*Prodcutos*/}
           {productos.map((prod) => (
@@ -141,14 +118,12 @@ function Catalogo() {
               {/*Imagen*/}
               <div>
                 <Link to="#">
-                  <img src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`} style={{ width: "20vh" }}></img>
+                  <img src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`} alt={`${prod.imagenUrl}`} style={{ width: "20vh" }}></img>
                 </Link>
               </div>
               {/*Nombre y descripcion*/}
-              <div style={{ flex: 1 }}>
-                <Link
-                  key={prod.idProducto}
-                  to="#"
+              <div style={{ flex: 1, margin: "0rem 2rem" }}>
+                <Link to={`/vista/${prod.idProducto}`}
                   style={{
                     textDecoration: "none",
                     color: isHovered === prod.idProducto ? "#f7ad02" : "black", // Cambia el fondo cuando se pasa el mouse
@@ -176,15 +151,17 @@ function Catalogo() {
                   key={prod.idProducto}
                   style={{
                     fontSize: "1.7vh",
-                    color: isHoveredButton == prod.idProducto ? "black" : "white",
+                    color: isHoveredButton === prod.idProducto ? "black" : "white",
                     backgroundColor:
-                      isHoveredButton == prod.idProducto ? "white" : "black",
+                      isHoveredButton === prod.idProducto ? "white" : "black",
                     transition: "0.2s",
                     borderRadius: "10px",
                     padding: "1vh",
                   }}
                   onMouseEnter={() => setIsHoveredButton(prod.idProducto)}
                   onMouseLeave={() => setIsHoveredButton(null)}
+                  onClick={() => agregarAlCarrito(prod.idProducto)}
+
                 >
                   Agregar al carrito
                 </button>
@@ -208,7 +185,7 @@ function Catalogo() {
           Barra Derecha
         </div>
       </div>
-      <PieDePagina/>   
+      <PieDePagina />
     </div>
   );
 }

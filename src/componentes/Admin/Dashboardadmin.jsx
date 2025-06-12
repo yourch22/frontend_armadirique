@@ -269,7 +269,11 @@ const DashboardAdmin = () => {
   return (
     <div className="d-flex flex-column flex-md-row vh-100">
       {/* Sidebar */}
+<<<<<<< HEAD
       <nav className="sidebar-nav bg-dark text-white p-3" style={{ minWidth: "220px" }}>
+=======
+  <nav className="sidebar-nav bg-dark text-white p-3" style={{ minWidth: "220px" }}>
+>>>>>>> flores
   <h4 className="text-uppercase mb-4 text-center">ARMADIRIQUE</h4>
   <ul className="nav flex-column">
     {[
@@ -301,8 +305,14 @@ const DashboardAdmin = () => {
         Cerrar sesión
       </button>
     </li>
+<<<<<<< HEAD
   </ul>
 </nav>
+=======
+  </ul>
+</nav>
+
+>>>>>>> flores
 
       {/* Main Content */}
       <main className="flex-grow-1 bg-light p-4 overflow-auto">

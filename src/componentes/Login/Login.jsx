@@ -14,7 +14,7 @@ import {
 } from 'react-bootstrap';
 import { 
   FaArrowLeft,
-  FaBars, 
+  FaBars,
   FaUser, 
   FaSearch, 
   FaShoppingCart,
@@ -129,30 +129,30 @@ const handleSubmit = async (e) => {
       }} />
       
       {/* Header personalizable */}
-            <Navbar 
-              expand="lg" 
+            <Navbar
+              expand="lg"
               className="shadow-sm"
-              style={{ 
+              style={{
                 backgroundColor: '#f8f9fa',
                 padding: '15px 0'
               }}
             >
               <Container>
-                <Button 
-                  variant="link" 
+                <Button
+                  variant="link"
                   onClick={() => navigate(-1)}
                   className="text-dark text-decoration-none"
-                  style={{ 
+                  style={{
                     fontWeight: '500',
                     marginLeft: '-50px'
                   }}
                 >
                   <FaArrowLeft className="me-2" /> Volver
                 </Button>
-      
-                <Navbar.Brand 
+
+                <Navbar.Brand
                   className="mx-auto"
-                  style={{ 
+                  style={{
                     fontSize: '1.8rem',
                     fontWeight: '700',
                     color: '#333',
@@ -161,7 +161,7 @@ const handleSubmit = async (e) => {
                 >
                   <Nav.Link href='/inicio'>ARMADIRIQUE</Nav.Link>
                 </Navbar.Brand>
-                
+
                 <div style={{ width: '160px' }}></div>
               </Container>
             </Navbar>
