@@ -1594,11 +1594,7 @@ const ArmadiqueCheckout = () => {
                               PAGO CON YAPE - DIEGO
                             </h5>
                             <div className="text-center mb-4">
-                              <img
-                                src="https://seeklogo.com/images/Y/yape-logo-1E9E4F5A71-seeklogo.com.png"
-                                alt="Yape Logo"
-                                style={{ height: "60px", objectFit: "contain" }}
-                              />
+                              
                             </div>
                             <div className="row align-items-center">
                               <div className="col-md-6 text-center mb-4">
@@ -1647,11 +1643,7 @@ const ArmadiqueCheckout = () => {
                               PAGO CON PLIN - ERICK
                             </h5>
                             <div className="text-center mb-4">
-                              <img
-                                src="https://seeklogo.com/images/P/plin-logo-67F4E7A91A-seeklogo.com.png"
-                                alt="Plin Logo"
-                                style={{ height: "60px", objectFit: "contain" }}
-                              />
+                              
                             </div>
                             <div className="row align-items-center">
                               <div className="col-md-6 text-center mb-4">
