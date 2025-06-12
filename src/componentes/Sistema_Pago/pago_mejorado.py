@@ -677,7 +677,8 @@ async def root():
     return {
         "message": "Servidor Armadirique con múltiples proveedores de email",
         "version": "2.0",
-        "features": ["Resend", "Gmail SMTP", "Simulación", "PDF Premium"]
+        "features": ["Resend", "Gmail SMTP", "Simulación", "PDF Premium"],
+        "frontend_file": "ArmadiqueCheckout.jsx"  # Actualizado desde index.html
     }
 
 if __name__ == "__main__":

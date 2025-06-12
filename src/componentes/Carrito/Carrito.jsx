@@ -1,8 +1,10 @@
-import React, { } from 'react';
+import React from 'react';
 import './carrito-estilos.css';
 import { useCarrito } from '../../context/CarritoContext';
+import { useNavigate } from 'react-router-dom'; // Importamos useNavigate para la redirección
 
 const Carrito = ({ carritoVisible, toggleCarrito }) => {
+  const navigate = useNavigate(); // Hook para navegación
 
   const {
     carrito,
@@ -13,19 +15,34 @@ const Carrito = ({ carritoVisible, toggleCarrito }) => {
 
   if (!carrito) return null;
 
-  const totalPrecio = carrito?.items?.reduce((total, item) => total + item.producto.precio * item.cantidad,0) || 0;
+  const totalPrecio = carrito?.items?.reduce((total, item) => total + item.producto.precio * item.cantidad, 0) || 0;
 
+  // Función para manejar la redirección al checkout
+  const irAlCheckout = () => {
+    if (carrito.items && carrito.items.length > 0) {
+      // Cerramos el carrito antes de navegar
+      toggleCarrito();
+      
+      // Navegamos a la página de checkout
+      navigate('/checkout', { 
+        state: { 
+          productosCarrito: carrito.items,
+          totalPrecio: totalPrecio 
+        } 
+      });
+    } else {
+      alert('Agrega productos al carrito antes de continuar');
+    }
+  };
 
   return (
     <div>
       <div className={`carrito ${carritoVisible ? 'visible' : ''}`}>
-
         <h6>Carrito de Compras</h6>
         <div className='botones-superiores'>
           <button onClick={vaciarCarrito}>Vaciar carrito</button>
           <button onClick={toggleCarrito}>X</button>
         </div>
-
 
         {!carrito.items || carrito.items.length === 0 ? (
           <p>El carrito está vacío.</p>
@@ -33,7 +50,6 @@ const Carrito = ({ carritoVisible, toggleCarrito }) => {
           <div className='contenedor-carrito'>
             <div className='item-carrito'>
               {carrito.items.map((item) => (
-
                 <div className='item' key={item.id}>
                   <div className='seccion-izquierda'>
                     <div className='marco-miniatura'>
@@ -52,20 +68,16 @@ const Carrito = ({ carritoVisible, toggleCarrito }) => {
                   <div className='seccion-derecha'>
                     <button className='btn-eliminar' onClick={() => eliminarProducto(item.producto.productoId)}>X</button>
                   </div>
-
                 </div>
-
               ))}
               <div className='total-precio'>
                 <div>Total: .S/{totalPrecio}</div>
               </div>
               <div className='comprar'>
-                <button className='btn-comprar'>Comprar</button>
+                <button className='btn-comprar' onClick={irAlCheckout}>Comprar</button>
               </div>
-
             </div>
           </div>
-
         )}
       </div>
     </div>

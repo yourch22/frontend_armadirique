@@ -1,22 +1,21 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './componentes/Login/Login';
-import Registrar from './componentes/Registrar/Registrar';
-import Dashboard from './componentes/Dashboard/Dashboard';
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import Login from "./componentes/Login/Login"
+import Registrar from "./componentes/Registrar/Registrar"
+import Dashboard from "./componentes/Dashboard/Dashboard"
 
-import DashboardAdmin from './componentes/Admin/Dashboardadmin';
-import DashboardCliente from './componentes/Client/DashboardCliente';
-import Catalogo from './componentes/Catalogo/Catalogo';
-import Inicio from './componentes/Inicio/Inicio';
-import Vista from './componentes/Vista/Vista';
-import Carrito from './componentes/Carrito/Carrito';
-import Contacto from './componentes/Contacto/Contacto'
+import DashboardAdmin from "./componentes/Admin/Dashboardadmin"
+import DashboardCliente from "./componentes/Client/DashboardCliente"
+import Catalogo from "./componentes/Catalogo/Catalogo"
+import Inicio from "./componentes/Inicio/Inicio"
+import Vista from "./componentes/Vista/Vista"
+import Carrito from "./componentes/Carrito/Carrito"
+import Contacto from "./componentes/Contacto/Contacto"
+import ArmadiqueCheckout from "./componentes/Sistema_Pago/ArmadiqueCheckout" // Agregada extensión .jsx
 
+import "./App.css"
 
-import './App.css';
-
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 function App() {
   return (
@@ -37,6 +36,9 @@ function App() {
           <Route path="/carrito" element={<Carrito />} />
           <Route path="/contacto" element={<Contacto />} />
 
+          {/* Nueva ruta para el checkout */}
+          <Route path="/checkout" element={<ArmadiqueCheckout />} />
+
           {/* Ruta comodín para rutas inválidas */}
           <Route path="*" element={<Navigate to="/inicio" />} />
         </Routes>
@@ -53,7 +55,7 @@ function App() {
         draggable
       />
     </>
-  );
+  )
 }
 
-export default App;
+export default App
