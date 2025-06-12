@@ -22,7 +22,6 @@ const DashboardAdmin = () => {
     idCategoria: "",
     idUsuario: "",
   });
-
   // Estado para la paginación
   const [pagination, setPagination] = useState({
     page: 0,
@@ -31,14 +30,12 @@ const DashboardAdmin = () => {
     totalElements: 0,
     totalPages: 0,
   });
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       window.location.href = "/login";
       return;
     }
-
     const fetchUsuario = async () => {
       try {
         const response = await fetch(
@@ -64,7 +61,6 @@ const DashboardAdmin = () => {
     fetchProductos(); // Llamamos a fetchProductos inicialmente
     fetchCategorias(); // Cargamos las categorías al inicio
   }, []);
-
   // Función para cargar productos con paginación
   const fetchProductos = async (
     page = pagination.page,
@@ -93,7 +89,6 @@ const DashboardAdmin = () => {
       setError("Error al obtener los productos");
     }
   };
-
   // Función para cargar categorías
   const fetchCategorias = async () => {
     try {
@@ -529,5 +524,4 @@ const DashboardAdmin = () => {
     </div>
   );
 };
-
 export default DashboardAdmin;
