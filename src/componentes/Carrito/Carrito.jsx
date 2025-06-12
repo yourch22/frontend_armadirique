@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom'; // Importamos useNavigate para l
 
 const Carrito = ({ carritoVisible, toggleCarrito }) => {
   const navigate = useNavigate(); // Hook para navegación
-
   const {
     carrito,
     eliminarProducto,
@@ -14,7 +13,6 @@ const Carrito = ({ carritoVisible, toggleCarrito }) => {
   } = useCarrito();
 
   if (!carrito) return null;
-
   const totalPrecio = carrito?.items?.reduce((total, item) => total + item.producto.precio * item.cantidad, 0) || 0;
 
   // Función para manejar la redirección al checkout
@@ -34,7 +32,6 @@ const Carrito = ({ carritoVisible, toggleCarrito }) => {
       alert('Agrega productos al carrito antes de continuar');
     }
   };
-
   return (
     <div>
       <div className={`carrito ${carritoVisible ? 'visible' : ''}`}>
@@ -43,7 +40,6 @@ const Carrito = ({ carritoVisible, toggleCarrito }) => {
           <button onClick={vaciarCarrito}>Vaciar carrito</button>
           <button onClick={toggleCarrito}>X</button>
         </div>
-
         {!carrito.items || carrito.items.length === 0 ? (
           <p>El carrito está vacío.</p>
         ) : (
