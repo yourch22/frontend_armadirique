@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { toast } from 'react-toastify'; //libreria para notificaciones
+import React, { useState } from "react";
+import { toast } from "react-toastify"; //libreria para notificaciones
 
-import { 
-  Container, 
-  Form, 
-  Button, 
-  Card, 
-  Row, 
-  Col, 
+import {
+  Container,
+  Form,
+  Button,
+  Card,
+  Row,
+  Col,
   Alert,
   Navbar,
   FormSelect,
-  Nav
-} from 'react-bootstrap';
-import { 
+  Nav,
+} from "react-bootstrap";
+import {
   FaArrowLeft,
   FaEnvelope,
   FaLock,
@@ -21,150 +21,152 @@ import {
   FaPhone,
   FaMapMarkerAlt,
   FaCalendarAlt,
-  FaImage
-} from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+  FaImage,
+} from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 // import DatePicker from 'react-datepicker';
 // import 'react-datepicker/dist/react-datepicker.css';
 
 // Lista de países con prefijos
 const countryCodes = [
-  { code: '+51', name: 'Perú' },
-  { code: '+1', name: 'EE.UU.' },
-  { code: '+52', name: 'México' },
-  { code: '+34', name: 'España' },
-  { code: '+54', name: 'Argentina' },
-  { code: '+56', name: 'Chile' },
-  { code: '+57', name: 'Colombia' },
-  { code: '+58', name: 'Venezuela' },
+  { code: "+51", name: "Perú" },
+  { code: "+1", name: "EE.UU." },
+  { code: "+52", name: "México" },
+  { code: "+34", name: "España" },
+  { code: "+54", name: "Argentina" },
+  { code: "+56", name: "Chile" },
+  { code: "+57", name: "Colombia" },
+  { code: "+58", name: "Venezuela" },
 ];
 
 const Registrar = () => {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    confirmPassword: '',
-    nombre: '',
-    apellido: '',
-    direccion: '',
-    ciudad: '',
-    countryCode: '+51',
-    telefono: '',
-    email: '',
+    username: "",
+    password: "",
+    confirmPassword: "",
+    nombre: "",
+    apellido: "",
+    direccion: "",
+    ciudad: "",
+    countryCode: "+51",
+    telefono: "",
+    email: "",
     estado: true,
     perfil: null,
-    fechaNacimiento: null
+    fechaNacimiento: null,
   });
-  
-  const [errorMessage, setErrorMessage] = useState('');
+
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
-    setFormData(prev => ({ ...prev, perfil: e.target.files[0] }));
+    setFormData((prev) => ({ ...prev, perfil: e.target.files[0] }));
   };
 
   const handleDateChange = (date) => {
-    setFormData(prev => ({ ...prev, fechaNacimiento: date }));
+    setFormData((prev) => ({ ...prev, fechaNacimiento: date }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (formData.password !== formData.confirmPassword) {
-    setErrorMessage("Las contraseñas no coinciden.");
-    toast.error("Las contraseñas no coinciden");
-    return;
-  }
-  const usuario = {
-    username: formData.nombre,
-    password: formData.password,
-    nombre: formData.nombre,
-    apellidos: formData.apellido,
-    direccion: formData.direccion,
-    ciudad: "Lima", // Puedes cambiar esto según tu lógica
-    telefono: `${formData.countryCode}${formData.telefono}`,
-    email: formData.email,
-    estado: true, // Cambia esto según tu lógica
-    //fechaNacimiento: formData.fechaNacimiento,
-    perfil: "foto.png",
-  };
-console.log(usuario);
-  try {
-    const response = await fetch("http://localhost:8080/api/v1/usuarios/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(usuario),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      setErrorMessage(errorData?.message || "Error al registrar usuario.");
-      console.error("Error en el registro:", errorData);
-      // Error
-      toast.error('Ocurrió un error');
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage("Las contraseñas no coinciden.");
+      toast.error("Las contraseñas no coinciden");
       return;
     }
+    const usuario = {
+      username: formData.nombre,
+      password: formData.password,
+      nombre: formData.nombre,
+      apellidos: formData.apellido,
+      direccion: formData.direccion,
+      ciudad: "Lima", // Puedes cambiar esto según tu lógica
+      telefono: `${formData.countryCode}${formData.telefono}`,
+      email: formData.email,
+      estado: true, // Cambia esto según tu lógica
+      //fechaNacimiento: formData.fechaNacimiento,
+      perfil: "foto.png",
+    };
+    console.log(usuario);
+    try {
+      const response = await fetch("http://localhost:8080/api/v1/usuarios/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(usuario),
+      });
 
-    const data = await response.json();
-    // alerta de éxito
-     toast.success('Usuario registrado con éxito');
-    navigate("/login");
-  } catch (error) {
-    console.error("Error de red:", error);
-    setErrorMessage("Error de red al registrar usuario.");
-  }
-};
+      if (!response.ok) {
+        const errorData = await response.json();
+        setErrorMessage(errorData?.message || "Error al registrar usuario.");
+        console.error("Error en el registro:", errorData);
+        // Error
+        toast.error("Ocurrió un error");
+        return;
+      }
+
+      const data = await response.json();
+      // alerta de éxito
+      toast.success("Usuario registrado con éxito");
+      navigate("/login");
+    } catch (error) {
+      console.error("Error de red:", error);
+      setErrorMessage("Error de red al registrar usuario.");
+    }
+  };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: 'rgba(235, 224, 224, 0.49)',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed',
-    }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "rgba(235, 224, 224, 0.49)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      }}
+    >
       {/* Header personalizable */}
-      <Navbar 
-        expand="lg" 
+      <Navbar
+        expand="lg"
         className="shadow-sm"
-        style={{ 
-          backgroundColor: '#f8f9fa',
-          padding: '15px 0'
+        style={{
+          backgroundColor: "#f8f9fa",
+          padding: "15px 0",
         }}
       >
         <Container>
-          <Button 
-            variant="link" 
+          <Button
+            variant="link"
             onClick={() => navigate(-1)}
             className="text-dark text-decoration-none"
-            style={{ 
-              fontWeight: '500',
-              marginLeft: '-50px'
+            style={{
+              fontWeight: "500",
+              marginLeft: "-50px",
             }}
           >
             <FaArrowLeft className="me-2" /> Volver
           </Button>
 
-          <Navbar.Brand 
+          <Navbar.Brand
             className="mx-auto"
-            style={{ 
-              fontSize: '1.8rem',
-              fontWeight: '700',
-              color: '#333',
-              letterSpacing: '1px'
+            style={{
+              fontSize: "1.8rem",
+              fontWeight: "700",
+              color: "#333",
+              letterSpacing: "1px",
             }}
           >
-            <Nav.Link href='/inicio'>ARMADIRIQUE</Nav.Link>
+            <Nav.Link href="/inicio">ARMADIRIQUE</Nav.Link>
           </Navbar.Brand>
-          
-          <div style={{ width: '160px' }}></div>
+
+          <div style={{ width: "160px" }}></div>
         </Container>
       </Navbar>
 
@@ -172,14 +174,17 @@ console.log(usuario);
       <Container className="py-5">
         <Row className="justify-content-center">
           <Col xs={12} md={10} lg={8} xl={6}>
-            <Card className="border-0 shadow-lg" style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.95)',
-              borderRadius: '15px',
-              overflow: 'hidden'
-            }}>
+            <Card
+              className="border-0 shadow-lg"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                borderRadius: "15px",
+                overflow: "hidden",
+              }}
+            >
               <Card.Body className="p-4 p-md-5">
                 <h2 className="text-center text-dark mb-4">Crear Cuenta</h2>
-                
+
                 {errorMessage && (
                   <Alert variant="danger" className="rounded-pill">
                     {errorMessage}
@@ -204,9 +209,7 @@ console.log(usuario);
                     </Col>
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label className="text-dark">
-                          Apellido
-                        </Form.Label>
+                        <Form.Label className="text-dark">Apellido</Form.Label>
                         <Form.Control
                           name="apellido"
                           value={formData.apellido}
@@ -297,6 +300,42 @@ console.log(usuario);
                       required
                     />
                   </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label className="text-dark">
+                      <FaMapMarkerAlt className="me-2 text-primary" />
+                      provincia
+                    </Form.Label>
+                    <Form.Control
+                      name="provincia"
+                      value={formData.provincia}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label className="text-dark">
+                      <FaMapMarkerAlt className="me-2 text-primary" />
+                      distrito
+                    </Form.Label>
+                    <Form.Control
+                      name="distrito"
+                      value={formData.distrito}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label className="text-dark">
+                      <FaMapMarkerAlt className="me-2 text-primary" />
+                      codigopostal
+                    </Form.Label>
+                    <Form.Control
+                      name="codigopostal"
+                      value={formData.codigopostal}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
 
                   {/* <Form.Group className="mb-3">
                     <Form.Label className="text-dark">
@@ -357,21 +396,21 @@ console.log(usuario);
                     </Col>
                   </Row>
 
-                  <Button 
-                    variant="primary" 
-                    type="submit" 
+                  <Button
+                    variant="primary"
+                    type="submit"
                     className="w-100 py-2 rounded-pill mt-3"
                   >
                     Registrarse
                   </Button>
 
                   <p className="text-center text-dark mt-4 mb-0">
-                    ¿Ya tienes cuenta?{' '}
-                    <a 
+                    ¿Ya tienes cuenta?{" "}
+                    <a
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        navigate('/login');
+                        navigate("/login");
                       }}
                       className="text-primary text-decoration-none fw-bold"
                     >

@@ -1,12 +1,13 @@
-"use client"
 
 import { useState, useRef, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-
+import { useAuth } from '../../context/AuthContext';
 const ArmadiqueCheckout = () => {
   const location = useLocation()
   const navigate = useNavigate()
-
+  const { usuario } = useAuth(); // contiene el token e ID del usuario
+  const [datos, setDatos] = useState(null);
+  const [loading, setLoading] = useState(true);
   // Obtenemos los productos del carrito y el total desde la navegación
   const productosCarrito = location.state?.productosCarrito || []
   const totalCarrito = location.state?.totalPrecio || 0
@@ -488,6 +489,33 @@ const ArmadiqueCheckout = () => {
       })
     }
   }
+// Efecto para obtener datos del usuario (ARREGLADO)
+  useEffect(() => {
+    const obtenerDatosUsuario = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/v1/auth/actual-usuario', {
+          headers: {
+            Authorization: `Bearer ${usuario.token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al obtener datos del usuario');
+        }
+
+        const data = await response.json();
+        setDatos(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (usuario?.token) {
+      obtenerDatosUsuario();
+    }
+  }, [usuario]);
 
   // Efecto para cargar Leaflet cuando se monta el componente (ARREGLADO)
   useEffect(() => {
@@ -1414,7 +1442,15 @@ const ArmadiqueCheckout = () => {
           }
         }
       `}</style>
-
+    {loading ? (
+      <p>Cargando datos...</p>
+    ) : !datos ? (
+      <p>No se pudieron cargar los datos.</p>
+    ) : (
+      <>
+        {/* tu contenido principal */}
+      </>
+    )}
       <div className="light-premium-bg">
         {/* Header premium */}
         <nav className="navbar navbar-expand-lg glass-dark sticky-top">
@@ -1555,7 +1591,7 @@ const ArmadiqueCheckout = () => {
                           <input
                             type="text"
                             className={`form-control form-control-lg input-premium ${errors.firstName ? "error" : ""}`}
-                            value={customer.firstName}
+                            value={datos?.nombre || customer.firstName || ""}
                             onChange={(e) => handleCustomerChange("firstName", e.target.value)}
                             placeholder="Juan Carlos"
                             required
@@ -1567,7 +1603,7 @@ const ArmadiqueCheckout = () => {
                           <input
                             type="text"
                             className={`form-control form-control-lg input-premium ${errors.lastName ? "error" : ""}`}
-                            value={customer.lastName}
+                            value={datos?.apellidos||customer.lastName}
                             onChange={(e) => handleCustomerChange("lastName", e.target.value)}
                             placeholder="García López"
                             required
@@ -1579,7 +1615,7 @@ const ArmadiqueCheckout = () => {
                           <input
                             type="email"
                             className={`form-control form-control-lg input-premium ${errors.email ? "error" : ""}`}
-                            value={customer.email}
+                            value={datos?.email ||customer.email}
                             onChange={(e) => handleCustomerChange("email", e.target.value)}
                             placeholder="correo@ejemplo.com"
                             required
@@ -1591,10 +1627,10 @@ const ArmadiqueCheckout = () => {
                           <input
                             type="tel"
                             className={`form-control form-control-lg input-premium ${errors.phone ? "error" : ""}`}
-                            value={customer.phone}
+                            value={datos?.telefono || customer.phone}
                             onChange={(e) => handlePhoneChange(e.target.value)}
                             placeholder="999888777"
-                            maxLength={9}
+                            // maxLength={9}
                             required
                           />
                           {errors.phone && <div className="error-text">{errors.phone}</div>}
@@ -1621,7 +1657,7 @@ const ArmadiqueCheckout = () => {
                             <input
                               type="text"
                               className={`form-control form-control-lg input-premium ${errors.address ? "error" : ""}`}
-                              value={customer.address}
+                              value={datos?.direccion || customer.address}
                               onChange={(e) => handleCustomerChange("address", e.target.value)}
                               placeholder="Av. Javier Prado Este 123, San Isidro"
                               required
@@ -1642,7 +1678,7 @@ const ArmadiqueCheckout = () => {
                           <label className="form-label fw-bold text-blue">DEPARTAMENTO *</label>
                           <select
                             className={`form-control form-control-lg input-premium ${errors.department ? "error" : ""}`}
-                            value={customer.department}
+                            value={datos?.ciudad || customer.department}
                             onChange={(e) => handleCustomerChange("department", e.target.value)}
                             required
                           >
@@ -1663,7 +1699,7 @@ const ArmadiqueCheckout = () => {
                           <input
                             type="text"
                             className={`form-control form-control-lg input-premium ${errors.district ? "error" : ""}`}
-                            value={customer.district}
+                            value={datos?.distrito ||customer.district}
                             onChange={(e) => handleCustomerChange("district", e.target.value)}
                             placeholder="San Isidro"
                             required
@@ -1675,7 +1711,7 @@ const ArmadiqueCheckout = () => {
                           <input
                             type="text"
                             className={`form-control form-control-lg input-premium ${errors.zipCode ? "error" : ""}`}
-                            value={customer.zipCode}
+                            value={datos?.codigopostal || customer.zipCode}
                             onChange={(e) => handleCustomerChange("zipCode", e.target.value)}
                             placeholder="15036"
                             maxLength={5}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { 
   Container, 
   Form, 
@@ -27,6 +28,7 @@ import { useNavigate } from 'react-router-dom';
 import fondoLogin from './mueble.png';
 /*  RUTA PAR ELEGIR LA IMAGEN */
 const Login = () => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -75,7 +77,7 @@ const handleSubmit = async (e) => {
     }
 
     const data = await response.json();
-    localStorage.setItem('token', data.token);
+    // localStorage.setItem('token', data.token);
     // Obtener usuario actual
     const userResponse = await fetch('http://localhost:8080/api/v1/auth/actual-usuario', {
       method: 'GET',
@@ -90,8 +92,9 @@ const handleSubmit = async (e) => {
 
     const user = await userResponse.json();
     const rol = user.authorities[0].authority;
-    localStorage.setItem('userId', user.usuarioId);
-
+    // localStorage.setItem('userId', user.usuarioId);
+  
+    login(data.token, user.usuarioId); // <-- esto asegura que el contexto se actualice
 
     setSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
 
@@ -99,7 +102,8 @@ const handleSubmit = async (e) => {
       if (rol === 'ADMIN') {
         navigate('/dashboardadmin');
       } else {
-        navigate('/dashboardcliente');
+        navigate('/inicio');
+        // navigate('/dashboardcliente');
       }
     }, 2000);
   } catch (error) {

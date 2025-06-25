@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import {
   Container,
   Form,
@@ -29,10 +32,34 @@ import Carrito from '../Carrito/Carrito';
 import { useCarrito } from '../../context/CarritoContext';
 
 function NavbarCliente(){
+const { logout } = useAuth(); // <-- usamos el contexto
+  const navigate = useNavigate();
 const [showSidebar, setShowSidebar] = useState(false);
 const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
+    // localStorage.removeItem("token");
+    // window.location.href = "/login";
+       Swal.fire({
+      title: '¿Cerrar sesión?',
+      text: 'Se cerrará tu sesión actual.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, salir',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        logout(); // <-- limpia el contexto y localStorage
+        Swal.fire({
+          title: '¡Sesión cerrada!',
+          text: 'Has salido exitosamente.',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+        setTimeout(() => navigate('/login'), 1500);
+      }
+    });
   };
 //Variable para el Carrito
 const {carrito } = useCarrito();
