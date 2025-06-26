@@ -38,8 +38,11 @@ function NavbarCliente() {
   const navigate = useNavigate();
   const [showSidebar, setShowSidebar] = useState(false);
   const handleLogout = () => {
-    // localStorage.removeItem("token");
-    // window.location.href = "/login";
+
+    if (!isLoggedIn){
+      navigate("/login");
+      return;
+    }
     Swal.fire({
       title: "¿Cerrar sesión?",
       text: "Se cerrará tu sesión actual.",
