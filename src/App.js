@@ -11,6 +11,10 @@ import Vista from "./componentes/Vista/Vista"
 import Carrito from "./componentes/Carrito/Carrito"
 import Contacto from "./componentes/Contacto/Contacto"
 import ArmadiqueCheckout from "./componentes/Sistema_Pago/ArmadiqueCheckout" // Agregada extensión .jsx
+import ConfirmacionCompra from './componentes/Pedido/ConfirmacionCompra' // Agregada extensión .jsx;
+import MisPedidos from "./componentes/MisPedidos/MisPedidos"; // ajusta la ruta
+
+
 
 import "./App.css"
 
@@ -35,7 +39,8 @@ function App() {
           <Route path="/vista/:id" element={<Vista />} />
           <Route path="/carrito" element={<Carrito />} />
           <Route path="/contacto" element={<Contacto />} />
-
+          <Route path="/confirmacion" element={<ConfirmacionCompra />} />
+          <Route path="/mis-pedidos" element={<MisPedidos />} />
           {/* Nueva ruta para el checkout */}
           <Route path="/checkout" element={<ArmadiqueCheckout />} />
 
