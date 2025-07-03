@@ -1,18 +1,14 @@
 // Importaciones necesarias
-import React, { useState } from 'react';
-import NavbarCliente from "../Cabeceras/NavbarCliente"
-import PieDePagina from '../Cabeceras/PieDePagina'
+import { Link } from "react-router-dom";
+import Carrito from '../Carrito/Carrito';
+import { useCarrito } from '../../context/CarritoContext';
+import React, { useEffect, useState } from 'react';
+import NavbarCliente from "../Cabeceras/NavbarCliente";
+import PieDePagina from '../Cabeceras/PieDePagina';
 import {
     Container,
-    Form,
-    Button,
-    Card,
-    Row,
-    Col,
-    Alert,
     Navbar,
     Nav,
-    FormCheck,
     Offcanvas
 } from 'react-bootstrap';
 import {
@@ -20,74 +16,82 @@ import {
     FaUser,
     FaSearch,
     FaShoppingCart,
-    FaFacebook,
-    FaGoogle,
+    FaInstagram,
+    FaFacebookF,
+    FaYoutube,
     FaTimes
 } from 'react-icons/fa';
 import slide1 from './slide1.jpg';
 import slide2 from './slide2.jpg';
 import slide3 from './slide3.jpg';
-const productos = [
-    { id: 1, nombre: 'Silla Madera Azul', descripcion: 'Descripción A', precio: 's/ 800.00',url:'mueble1' },
-    { id: 2, nombre: 'Sillon Rojo', descripcion: 'Descripción A', precio: 's/ 600.00',url:'mueble2' },
-    { id: 3, nombre: 'Silla Blanca', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble3' },
-    { id: 4, nombre: 'Sofa Marron', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble4' },
-    { id: 5, nombre: 'Sillon Plomo', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble5' },
-    { id: 6, nombre: 'Silla Amoblada', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble6' },
-    { id: 7, nombre: 'Sofa Gris', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble7' },
-    { id: 8, nombre: 'Silla Verde Giratoria', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble8' },
-    { id: 9, nombre: 'Sofa Azul', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble9' },
-    { id: 10, nombre: 'Banco Madera', descripcion: 'Descripción A', precio: 's/ 1000.00',url:'mueble10' },
-];
 
 const images = [
-  slide1,slide2,slide3
+    slide1, slide2, slide3
 ];
 
 
 
-
+// URL base de tu API
+const API_BASE_URL = 'http://localhost:8080/api/v1';
 
 // Definición del componente
 
 function Catalogo() {
-
-    //const [showSidebar, setShowSidebar] = useState(false);
-
+    const [productos, setProductos] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [index, setIndex] = useState(0);
 
     const prevSlide = () => {
         setIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
     };
-
     const nextSlide = () => {
         setIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     };
+    // useEffect para obtener los productos de la API
+    useEffect(() => {
+        const fetchProductos = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/productos`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setProductos(data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                setError("No se pudieron cargar los productos. Inténtalo de nuevo más tarde.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProductos();
+    }, []); // El array vacío asegura que se ejecute solo una vez al montar el componente
+
 
     return (
-        
         <div style={{
             minHeight: '100vh',
             paddingTop: '80px',
             position: 'relative'
         }}>
-
-<NavbarCliente/> 
+            <NavbarCliente />
             {/**********************************carroulsse******************************************************* */}
 
-            <div style={{ position: 'relative', width: '100%',height:'400px',overflow: 'hidden'}}>
-                
+            <div style={{ position: 'relative', width: '100%', height: '400px', overflow: 'hidden' }}>
+
                 <img
                     src={images[index]}
                     alt={`Slide ${index + 1}`}
                     style={{
-                            width: '100%',      // o '100%' si quieres que se adapte al contenedor
-                            height: 'auto',     // puedes ajustarlo según necesites
-                            position: 'absolute',
-                            bottom: 0,
-                            left: 0,
-                        
-                        }}
+                        width: '100%',      // o '100%' si quieres que se adapte al contenedor
+                        height: 'auto',     // puedes ajustarlo según necesites
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+
+                    }}
                 />
 
                 {/* Botones de navegación */}
@@ -107,7 +111,6 @@ function Catalogo() {
                 >
                     ‹
                 </button>
-
                 <button
                     onClick={nextSlide}
                     style={{
@@ -125,66 +128,55 @@ function Catalogo() {
                     ›
                 </button>
             </div>
-
-
             {/*******************Cartas muebles productos****************************************/}
-            <div style={{marginTop:'5vh',marginLeft:'15%',marginRight:'15%',marginBottom:'7vh'}}>
-                {/**Promociones encabezado */}  
+            <div style={{ marginTop: '5vh', marginLeft: '15%', marginRight: '15%', marginBottom: '10%' }}>
+                {/**Promociones encabezado */}
                 <div>
                     <h6>Destacados</h6>
-                    <hr/>
+                    <hr />
                 </div>
                 {/*Contenedor Cartas */}
                 <div style={{
-                    display:'grid',
-                    //flexWrap:'wrap',
-                    //justifyContent: 'space-between',
+                    display: 'grid',
                     gridTemplateColumns: 'repeat(5, auto)',
-                    gap:'20px',
-                    
-                }}>     
-                    {/* carta */}   
-                     {productos.map((prod) => (    
-                        <div style={{
-                            display:'flex',
-                            flexDirection:'column',
-                            //border:'1px  #c3c3c3',
-                            boxShadow: 'inset 0 0 0 1px #c3c3c3',
-                            
-                            //width:'19%',
-                            //minHeight:'40vh',
-                            
-                            textAlign:'center',
-                            
+                    gap: '20px',
+
+                }}>
+                    {/* carta */}
+                    {productos.map((prod) => (
+                        
+                            <div key={prod.idProducto} style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                boxShadow: 'inset 0 0 0 1px #c3c3c3',
+                                textAlign: 'center',
+
                             }}>
+                                <Link to={`/vista/${prod.idProducto}`} style={{textDecoration: "none",color:'black'}}>
+                                <div style={{ padding: '5%' }}>{/*Imagen */}
+                                    <img src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`} alt={`mueble${prod.nombre}`}
+                                        style={{
+                                            width: '90%'
 
-                            <div style={{padding:'5%'}}>{/*Imagen */}
-                                <img src={`./imgMuebles/mueble${prod.id}.jpg`}  alt={`mueble${prod.id}`} 
-                                style={{
-                                    //border:'1px solid #c3c3c3', 
-                                    width:'90%'
-                                    
-                                }}/>
+                                        }} />
+                                </div>
+                                <div style={{ padding: '5%', fontSize: '2.5vh' }}>{/*Texto */}
+                                    <p>{prod.nombre}</p>
+                                    <p>s/ {prod.precio.toFixed(2)}</p>
+
+                                </div>
+                                </Link>
                             </div>
-                            <div style={{padding:'5%',fontSize:'2.5vh'}}>{/*Texto */}
-                                <p>{prod.nombre}</p>
-                                <p>{prod.precio}</p>
-                                
-                            </div>
-                            
-
-
-                        </div>
-                            
+                        
                     ))}
-
-
                 </div>
-                    
-                
-            </div> 
+            </div>
 
-            <PieDePagina/>     
+            <PieDePagina />
+
+
+            <Carrito />
+
 
         </div>
 

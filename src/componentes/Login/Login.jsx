@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { 
   Container, 
   Form, 
@@ -14,7 +15,7 @@ import {
 } from 'react-bootstrap';
 import { 
   FaArrowLeft,
-  FaBars, 
+  FaBars,
   FaUser, 
   FaSearch, 
   FaShoppingCart,
@@ -25,8 +26,9 @@ import {
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import fondoLogin from './mueble.png';
-
+/*  RUTA PAR ELEGIR LA IMAGEN */
 const Login = () => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -75,8 +77,7 @@ const handleSubmit = async (e) => {
     }
 
     const data = await response.json();
-    localStorage.setItem('token', data.token);
-
+    // localStorage.setItem('token', data.token);
     // Obtener usuario actual
     const userResponse = await fetch('http://localhost:8080/api/v1/auth/actual-usuario', {
       method: 'GET',
@@ -91,6 +92,9 @@ const handleSubmit = async (e) => {
 
     const user = await userResponse.json();
     const rol = user.authorities[0].authority;
+    // localStorage.setItem('userId', user.usuarioId);
+  
+    login(data.token, user.usuarioId); // <-- esto asegura que el contexto se actualice
 
     setSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
 
@@ -98,7 +102,8 @@ const handleSubmit = async (e) => {
       if (rol === 'ADMIN') {
         navigate('/dashboardadmin');
       } else {
-        navigate('/dashboardcliente');
+        navigate('/inicio');
+        // navigate('/dashboardcliente');
       }
     }, 2000);
   } catch (error) {
@@ -128,30 +133,30 @@ const handleSubmit = async (e) => {
       }} />
       
       {/* Header personalizable */}
-            <Navbar 
-              expand="lg" 
+            <Navbar
+              expand="lg"
               className="shadow-sm"
-              style={{ 
+              style={{
                 backgroundColor: '#f8f9fa',
                 padding: '15px 0'
               }}
             >
               <Container>
-                <Button 
-                  variant="link" 
+                <Button
+                  variant="link"
                   onClick={() => navigate(-1)}
                   className="text-dark text-decoration-none"
-                  style={{ 
+                  style={{
                     fontWeight: '500',
                     marginLeft: '-50px'
                   }}
                 >
                   <FaArrowLeft className="me-2" /> Volver
                 </Button>
-      
-                <Navbar.Brand 
+
+                <Navbar.Brand
                   className="mx-auto"
-                  style={{ 
+                  style={{
                     fontSize: '1.8rem',
                     fontWeight: '700',
                     color: '#333',
@@ -160,7 +165,7 @@ const handleSubmit = async (e) => {
                 >
                   <Nav.Link href='/inicio'>ARMADIRIQUE</Nav.Link>
                 </Navbar.Brand>
-                
+
                 <div style={{ width: '160px' }}></div>
               </Container>
             </Navbar>
@@ -300,10 +305,10 @@ const handleSubmit = async (e) => {
                     </a>
                   </div>
 
-                  {/* <div style={{ textAlign: 'center' }}>
+                   <div style={{ textAlign: 'center' }}>
                     <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1rem' }}>Ingresar con:</p>
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <Button variant="outline-danger" style={{
+                     {/*  <Button variant="outline-danger" style={{
                         padding: '8px 15px',
                         fontSize: '0.9rem',
                         borderRadius: '5px'
@@ -316,9 +321,9 @@ const handleSubmit = async (e) => {
                         borderRadius: '5px'
                       }}>
                         <FaFacebook style={{ marginRight: '0.5rem' }} /> Facebook
-                      </Button>
+                      </Button> */}
                     </div>
-                  </div> */}
+                  </div>
                 </Form>
               </Card.Body>
             </Card>
