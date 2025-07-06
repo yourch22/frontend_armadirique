@@ -3,14 +3,6 @@ import Login from "./componentes/Login/Login"
 import Registrar from "./componentes/Registrar/Registrar"
 import Dashboard from "./componentes/Dashboard/Dashboard"
 
-<<<<<<< HEAD
-import DashboardAdmin from './componentes/Admin/Dashboardadmin';
-import DashboardCliente from './componentes/Client/DashboardCliente';
-import Catalogo from './componentes/Catalogo/Catalogo';
-import Inicio from './componentes/Inicio/Inicio';
-import Contacto from './componentes/Contacto/Contacto';
-import GestionProducto from './componentes/GestionAdministrador/GestionProducto'
-=======
 import DashboardAdmin from "./componentes/Admin/Dashboardadmin"
 import DashboardCliente from "./componentes/Client/DashboardCliente"
 import Catalogo from "./componentes/Catalogo/Catalogo"
@@ -21,7 +13,6 @@ import Contacto from "./componentes/Contacto/Contacto"
 import ArmadiqueCheckout from "./componentes/Sistema_Pago/ArmadiqueCheckout" // Agregada extensión .jsx
 import ConfirmacionCompra from './componentes/Pedido/ConfirmacionCompra' // Agregada extensión .jsx;
 import MisPedidos from "./componentes/MisPedidos/MisPedidos"; // ajusta la ruta
->>>>>>> erick
 
 
 
@@ -40,31 +31,20 @@ function App() {
 
           <Route path="/login" element={<Login />} />
           <Route path="/registrar" element={<Registrar />} />
-<<<<<<< HEAD
-           // <Route path="/dashboardadmin" element={<DashboardAdmin />} />
-            <Route path="/dashboardcliente" element={<DashboardCliente />} /> 
-            <Route path="/gproductos" element={<GestionProducto />} />
-=======
           <Route path="/dashboardadmin" element={<DashboardAdmin />} />
           <Route path="/dashboardcliente" element={<DashboardCliente />} />
->>>>>>> erick
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/catalogo" element={<Catalogo />} />
           <Route path="/inicio" element={<Inicio />} />
           <Route path="/vista/:id" element={<Vista />} />
           <Route path="/carrito" element={<Carrito />} />
           <Route path="/contacto" element={<Contacto />} />
-<<<<<<< HEAD
-          <Route path="/gproductos" element={<GestionProducto />} />
-  
-=======
           <Route path="/confirmacion" element={<ConfirmacionCompra />} />
           <Route path="/mis-pedidos" element={<MisPedidos />} />
           {/* Nueva ruta para el checkout */}
           <Route path="/checkout" element={<ArmadiqueCheckout />} />
 
           {/* Ruta comodín para rutas inválidas */}
->>>>>>> erick
           <Route path="*" element={<Navigate to="/inicio" />} />
         </Routes>
       </Router>
