@@ -1,0 +1,126 @@
+import React, { useEffect, useState } from 'react';
+import { Button, Table, Modal, Form } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+
+const Categorias = () => {
+  const [categorias, setCategorias] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({ nombre: '', descripcion: '' });
+  const [editando, setEditando] = useState(null);
+
+  const fetchCategorias = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/categorias');
+      const data = await res.json();
+      setCategorias(data);
+    } catch (error) {
+      console.error('Error al cargar categorías:', error);
+    }
+  };
+
+  const handleGuardar = async () => {
+    try {
+      const url = editando
+        ? `http://localhost:8080/categorias/${editando.id}`
+        : 'http://localhost:8080/categorias';
+
+      const method = editando ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error('Error al guardar categoría');
+      toast.success(editando ? 'Categoría actualizada' : 'Categoría creada');
+      setFormData({ nombre: '', descripcion: '' });
+      setEditando(null);
+      setShowModal(false);
+      fetchCategorias();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleEditar = (categoria) => {
+    setEditando(categoria);
+    setFormData({ nombre: categoria.nombre, descripcion: categoria.descripcion });
+    setShowModal(true);
+  };
+
+  const handleEliminar = async (id) => {
+    if (!window.confirm('¿Estás seguro de eliminar esta categoría?')) return;
+    try {
+      await fetch(`http://localhost:8080/categorias/${id}`, { method: 'DELETE' });
+      toast.success('Categoría eliminada');
+      fetchCategorias();
+    } catch (error) {
+      toast.error('Error al eliminar');
+    }
+  };
+
+  useEffect(() => {
+    fetchCategorias();
+  }, []);
+
+  return (
+    <div className="container mt-4">
+      <h2>Categorías</h2>
+      <Button onClick={() => setShowModal(true)}>Crear nueva</Button>
+      <Table striped bordered hover className="mt-3">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {categorias.map((cat) => (
+            <tr key={cat.id}>
+              <td>{cat.nombre}</td>
+              <td>{cat.descripcion}</td>
+              <td>
+                <Button size="sm" onClick={() => handleEditar(cat)}>Editar</Button>{' '}
+                <Button size="sm" variant="danger" onClick={() => handleEliminar(cat.id)}>Eliminar</Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>{editando ? 'Editar Categoría' : 'Nueva Categoría'}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.nombre}
+                onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control
+                as="textarea"
+                value={formData.descripcion}
+                onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
+          <Button onClick={handleGuardar}>{editando ? 'Actualizar' : 'Guardar'}</Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
+};
+
+export default Categorias;
