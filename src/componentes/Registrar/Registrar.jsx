@@ -86,8 +86,11 @@ const Registrar = () => {
       nombre: formData.nombre,
       apellidos: formData.apellido,
       direccion: formData.direccion,
-      ciudad: "Lima", // Puedes cambiar esto según tu lógica
-      telefono: `${formData.countryCode}${formData.telefono}`,
+      ciudad: formData.ciudad, // Puedes cambiar esto según tu lógica
+      provincia: formData.provincia,
+      distrito: formData.distrito,
+      codigopostal: formData.codigopostal,
+      telefono: `${formData.telefono}`,
       email: formData.email,
       estado: true, // Cambia esto según tu lógica
       //fechaNacimiento: formData.fechaNacimiento,
