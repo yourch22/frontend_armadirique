@@ -122,7 +122,7 @@ def send_email_gmail_smtp(to_email: str, subject: str, html_content: str):
     
     # Configuración Gmail (necesitas habilitar "Contraseñas de aplicación")
     gmail_user = "erickoswaldouc@gmail.com"  # CAMBIAR POR TU EMAIL
-    gmail_password = "vbqj lhsw kwko igrh"  # CAMBIAR POR TU CONTRASEÑA DE APLICACIÓN
+    gmail_password = "oupw txck miov ljbw"  # CAMBIAR POR TU CONTRASEÑA DE APLICACIÓN
     
     try:
         msg = MIMEMultipart('alternative')
