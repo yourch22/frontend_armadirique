@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import NavbarCliente from "../Cabeceras/NavbarCliente";
 import PieDePagina from '../Cabeceras/PieDePagina';
 
-const API_BASE_URL = 'http://localhost:8080/api/v1';
+const API_BASE_URL = `${process.env.REACT_APP_API_URL}/api/v1`;;
 
 function Vista() {
 
@@ -56,7 +56,7 @@ function Vista() {
                 }}>
                     {/* imagen*/}
                     <div style={{ width: '50%', alignSelf: 'center' }}>
-                        <img src={`http://localhost:8080/api/v1/uploads/${productos.imagenUrl}`} style={{ width: '30rem', objectFit: 'cover' }} alt="" />
+                        <img src={`${process.env.REACT_APP_API_URL}/api/v1/uploads/${productos.imagenUrl}`} style={{ width: '30rem', objectFit: 'cover' }} alt="" />
                     </div>
 
                     {/* info*/}

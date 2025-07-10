@@ -58,7 +58,7 @@ const handleSubmit = async (e) => {
   setSuccessMessage('');
 
   try {
-    const response = await fetch('http://localhost:8080/api/v1/auth/login', {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ const handleSubmit = async (e) => {
     const data = await response.json();
     // localStorage.setItem('token', data.token);
     // Obtener usuario actual
-    const userResponse = await fetch('http://localhost:8080/api/v1/auth/actual-usuario', {
+    const userResponse = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/auth/actual-usuario`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${data.token}`,
@@ -306,7 +306,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                    <div style={{ textAlign: 'center' }}>
-                    <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1rem' }}>Ingresar con:</p>
+                    {/*<p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1rem' }}>Ingresar con:</p>*/}
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                      {/*  <Button variant="outline-danger" style={{
                         padding: '8px 15px',

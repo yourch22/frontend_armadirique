@@ -7,7 +7,7 @@ import PieDePagina from '../Cabeceras/PieDePagina'
 import { Link } from "react-router-dom";
 
 // URL base de tu API
-const API_BASE_URL = 'http://localhost:8080/api/v1';
+const API_BASE_URL = `${process.env.REACT_APP_API_URL}/api/v1`;
 // Definición del componente
 
 function Catalogo() {
@@ -94,7 +94,7 @@ function Catalogo() {
               {/*Imagen*/}
               <div>
                 <Link to="#">
-                  <img src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`} alt={`${prod.imagenUrl}`} style={{ width: "20vh" }}></img>
+                  <img src={`${process.env.REACT_APP_API_URL}/api/v1/uploads/${prod.imagenUrl}`} alt={`${prod.imagenUrl}`} style={{ width: "20vh" }}></img>
                 </Link>
               </div>
               {/*Nombre y descripcion*/}

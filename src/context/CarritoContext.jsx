@@ -7,9 +7,10 @@ export const CarritoProvider = ({ children }) => {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
+  const carritoId =1;
   const RecargarCarrito= useCallback(() => {
     setCargando(true);
-    fetch('http://localhost:8080/api/v1/carrito/1')
+    fetch(`http://localhost:8080/api/v1/carrito/${carritoId}`)
       .then(res => {
         if (!res.ok) throw new Error('Error al obtener el carrito');
         return res.json();
@@ -22,10 +23,10 @@ export const CarritoProvider = ({ children }) => {
         setError(err.message);
         setCargando(false);
       });
-  }, []);
+  }, [carritoId]);
 
   const agregarAlCarrito = (productoId) => {
-    fetch(`http://localhost:8080/api/v1/carrito/1/agregar/${productoId}?cantidad=1`, {
+    fetch(`http://localhost:8080/api/v1/carrito/${carritoId}/agregar/${productoId}?cantidad=1`, {
       method: 'POST',
     })
       .then(() => RecargarCarrito())
@@ -33,7 +34,7 @@ export const CarritoProvider = ({ children }) => {
   };
 
   const eliminarProducto = (productoId) => {
-    fetch(`http://localhost:8080/api/v1/carrito/1/eliminar/${productoId}`, {
+    fetch(`http://localhost:8080/api/v1/carrito/${carritoId}/eliminar/${productoId}`, {
       method: 'DELETE',
     })
       .then(() => RecargarCarrito())
@@ -41,7 +42,7 @@ export const CarritoProvider = ({ children }) => {
   };
 
   const vaciarCarrito = () => {
-    fetch('http://localhost:8080/api/v1/carrito/1/vaciar', {
+    fetch(`http://localhost:8080/api/v1/carrito/${carritoId}/vaciar`, {
       method: 'DELETE',
     })
       .then(() => RecargarCarrito())
@@ -50,7 +51,7 @@ export const CarritoProvider = ({ children }) => {
 
   const actualizarCantidad = (productoId, nuevaCantidad) => {
     if (nuevaCantidad < 1) return;
-    fetch(`http://localhost:8080/api/v1/carrito/1/actualizar/${productoId}?cantidad=${nuevaCantidad}`, {
+    fetch(`http://localhost:8080/api/v1/carrito/${carritoId}/actualizar/${productoId}?cantidad=${nuevaCantidad}`, {
       method: 'PUT',
     })
       .then(() => RecargarCarrito())

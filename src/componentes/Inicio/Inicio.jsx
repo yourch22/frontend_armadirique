@@ -32,7 +32,7 @@ const images = [
 
 
 // URL base de tu API
-const API_BASE_URL = 'http://localhost:8080/api/v1';
+const API_BASE_URL = `${process.env.REACT_APP_API_URL}/api/v1`;
 
 // Definición del componente
 
@@ -153,7 +153,7 @@ function Catalogo() {
                             }}>
                                 <Link to={`/vista/${prod.idProducto}`} style={{textDecoration: "none",color:'black'}}>
                                 <div style={{ padding: '5%' }}>{/*Imagen */}
-                                    <img src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`} alt={`mueble${prod.nombre}`}
+                                    <img src={`${process.env.REACT_APP_API_URL}/api/v1/uploads/${prod.imagenUrl}`} alt={`mueble${prod.nombre}`}
                                         style={{
                                             width: '90%'
 
