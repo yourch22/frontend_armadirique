@@ -53,45 +53,21 @@ function Catalogo() {
       {/*Cuerpo principal de la pagina */}
       <div
         style={{
-          display: "flex",
-          alignItems: "stretch",
-          minHeight: "100vh",
+
+
           backgroundColor: "#f3f3f3",
         }}
       >
 
-        {/* Columna Izquierda */}
-        <div
-          style={{
-            width: "15%",
-            backgroundColor: "#ddd",
-            display: "flex",
-            justifyContent: "center",
-            padding: "20px",
-            boxSizing: "border-box",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "2vh",
-              fontWeight: "300",
-            }}
-          >
-            <p>Precio</p>
-            <p>Tipo</p>
-            <p>Envio</p>
-            <p>Descuento</p>
-          </div>
-        </div>
+
 
         {/* Columna Central(Catalogo) */}
         <div
           style={{
-            width: "70%",
             padding: "20px",
             boxSizing: "border-box",
+            marginLeft: "5%",
+            marginRight: "5%"
           }}
         >
           {/*Titulo*/}
@@ -170,20 +146,9 @@ function Catalogo() {
           ))}
         </div>
 
-        {/* Columna Derecha */}
-        <div
-          style={{
-            width: "15%",
-            backgroundColor: "#ddd",
-            display: "flex",
-            //alignItems: 'center',
-            justifyContent: "center",
-            padding: "20px",
-            boxSizing: "border-box",
-          }}
-        >
-          Barra Derecha
-        </div>
+    
+
+
       </div>
       <PieDePagina />
     </div>
