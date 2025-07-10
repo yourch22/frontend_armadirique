@@ -154,6 +154,12 @@ class GestionProducto extends Component {
                     >+ Nuevo Producto</button>
                 </div>
                 <div className="row">
+                    <button type="button" className="btn btn-dark mb-4"
+                        
+                        onClick={() => window.open("http://localhost:8080/api/v1/productos/?format=xlsx", "_blank")}
+                    >Exportar Stock</button>
+                </div>
+                <div className="row">
                     <div className="col-9">
                         <table className="table">
                             <thead>

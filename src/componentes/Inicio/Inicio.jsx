@@ -32,7 +32,7 @@ const images = [
 
 
 // URL base de tu API
-const API_BASE_URL = 'http://localhost:8080/api/v1';
+const API_BASE_URL = `${process.env.REACT_APP_API_URL}/api/v1`;
 
 // Definición del componente
 
@@ -79,7 +79,7 @@ function Catalogo() {
             <NavbarCliente />
             {/**********************************carroulsse******************************************************* */}
 
-            <div style={{ position: 'relative', width: '100%', height: '400px', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', width: '100%',overflow: 'hidden' }}>
 
                 <img
                     src={images[index]}
@@ -87,7 +87,6 @@ function Catalogo() {
                     style={{
                         width: '100%',      // o '100%' si quieres que se adapte al contenedor
                         height: 'auto',     // puedes ajustarlo según necesites
-                        position: 'absolute',
                         bottom: 0,
                         left: 0,
 
@@ -154,7 +153,7 @@ function Catalogo() {
                             }}>
                                 <Link to={`/vista/${prod.idProducto}`} style={{textDecoration: "none",color:'black'}}>
                                 <div style={{ padding: '5%' }}>{/*Imagen */}
-                                    <img src={`http://localhost:8080/api/v1/uploads/${prod.imagenUrl}`} alt={`mueble${prod.nombre}`}
+                                    <img src={`${process.env.REACT_APP_API_URL}/api/v1/uploads/${prod.imagenUrl}`} alt={`mueble${prod.nombre}`}
                                         style={{
                                             width: '90%'
 

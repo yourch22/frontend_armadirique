@@ -122,7 +122,7 @@ def send_email_gmail_smtp(to_email: str, subject: str, html_content: str):
     
     # Configuración Gmail (necesitas habilitar "Contraseñas de aplicación")
     gmail_user = "erickoswaldouc@gmail.com"  # CAMBIAR POR TU EMAIL
-    gmail_password = "vbqj lhsw kwko igrh"  # CAMBIAR POR TU CONTRASEÑA DE APLICACIÓN
+    gmail_password = "oupw txck miov ljbw" # CAMBIAR POR TU CONTRASEÑA DE APLICACIÓN
     
     try:
         msg = MIMEMultipart('alternative')
@@ -319,7 +319,7 @@ def generate_customer_invoice_html(payment_data: dict) -> str:
                         <span style='font-weight: bold; color: {"#10b981" if totals['shipping'] == 0 else "#1e293b"};'>{"GRATIS" if totals['shipping'] == 0 else f"S/ {totals['shipping']:.2f}"}</span>
                     </div>
                     <div style='display: flex; justify-content: space-between; margin-bottom: 15px; padding: 8px 0; border-bottom: 1px solid #f1f5f9;'>
-                        <span style='color: #475569;'>IGV (18%):</span>
+                        <span style='color: #475569;'>IGV Incluido:</span>
                         <span style='font-weight: bold;'>S/ {totals['tax']:.2f}</span>
                     </div>
                     <div style='display: flex; justify-content: space-between; padding: 15px 0; border-top: 3px solid #3b82f6; background: #f1f5f9; margin: 0 -20px -20px -20px; padding-left: 20px; padding-right: 20px;'>
