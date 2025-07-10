@@ -79,14 +79,15 @@ function Catalogo() {
             <NavbarCliente />
             {/**********************************carroulsse******************************************************* */}
 
-            <div style={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', width: '100%', height: '400px', overflow: 'hidden' }}>
 
                 <img
                     src={images[index]}
                     alt={`Slide ${index + 1}`}
                     style={{
-                        width: '100%',      // o '100%' si quieres que se adapte al contenedor
-                        height: 'auto',     // puedes ajustarlo según necesites
+                        width: '100%',  
+                        height: 'auto',   
+                        position: 'absolute',
                         bottom: 0,
                         left: 0,
 
