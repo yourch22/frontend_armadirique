@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { 
   Container, 
   Form, 
@@ -13,7 +14,8 @@ import {
   Offcanvas
 } from 'react-bootstrap';
 import { 
-  FaBars, 
+  FaArrowLeft,
+  FaBars,
   FaUser, 
   FaSearch, 
   FaShoppingCart,
@@ -26,6 +28,7 @@ import { useNavigate } from 'react-router-dom';
 import fondoLogin from './mueble.png';
 /*  RUTA PAR ELEGIR LA IMAGEN */
 const Login = () => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -55,7 +58,7 @@ const handleSubmit = async (e) => {
   setSuccessMessage('');
 
   try {
-    const response = await fetch('http://localhost:8080/api/v1/auth/login', {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -74,10 +77,9 @@ const handleSubmit = async (e) => {
     }
 
     const data = await response.json();
-    localStorage.setItem('token', data.token);
-
+    // localStorage.setItem('token', data.token);
     // Obtener usuario actual
-    const userResponse = await fetch('http://localhost:8080/api/v1/auth/actual-usuario', {
+    const userResponse = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/auth/actual-usuario`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${data.token}`,
@@ -90,6 +92,9 @@ const handleSubmit = async (e) => {
 
     const user = await userResponse.json();
     const rol = user.authorities[0].authority;
+    // localStorage.setItem('userId', user.usuarioId);
+  
+    login(data.token, user.usuarioId); // <-- esto asegura que el contexto se actualice
 
     setSuccessMessage('Inicio de sesión exitoso. Redirigiendo...');
 
@@ -97,7 +102,8 @@ const handleSubmit = async (e) => {
       if (rol === 'ADMIN') {
         navigate('/dashboardadmin');
       } else {
-        navigate('/dashboardcliente');
+        navigate('/inicio');
+        // navigate('/dashboardcliente');
       }
     }, 2000);
   } catch (error) {
@@ -109,9 +115,7 @@ const handleSubmit = async (e) => {
 
   return (
     <div style={{
-      minHeight: '100vh',
-      paddingTop: '60px',
-      position: 'relative'
+
     }}>
       {/* Fondo de imagen */}
       <div style={{
@@ -128,65 +132,43 @@ const handleSubmit = async (e) => {
         filter: 'brightness(0.8)'   
       }} />
       
-      {/* Header/Navbar */}
-      <Navbar bg="light" expand="lg" style={{
-        backgroundColor: '#fff !important',
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-        position: 'fixed',
-        top: 0,
-        width: '100%',
-        zIndex: 1000
-      }}>
-        <Container fluid>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <FaBars 
-              style={{ fontSize: '1.5rem', cursor: 'pointer', color: '#333', marginRight: '1rem' }} 
-              onClick={() => setShowSidebar(true)}
-            />
-            <Navbar.Brand href="#" style={{
-              fontWeight: 700,
-              fontSize: '1.5rem',
-              color: '#333'
-            }}>Armadirique</Navbar.Brand>
-          </div>
-          
-          <Navbar.Collapse id="basic-navbar-nav" style={{ justifyContent: 'center' }}>
-            <Nav style={{ margin: '0 auto' }}>
-              <Nav.Link href="#">Inicio</Nav.Link>
-              <Nav.Link href="/catalogo">Catálogo</Nav.Link>
-              <Nav.Link href="#">Contacto</Nav.Link>
-              <Nav.Link href="#">Nosotros</Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-          
-          <div style={{ display: 'flex' }}>
-            <FaSearch style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-            <FaShoppingCart style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-            <FaUser style={{ fontSize: '1.2rem', color: '#333', cursor: 'pointer', margin: '0 1rem' }} />
-          </div>
-        </Container>
-      </Navbar>
+      {/* Header personalizable */}
+            <Navbar
+              expand="lg"
+              className="shadow-sm"
+              style={{
+                backgroundColor: '#f8f9fa',
+                padding: '15px 0'
+              }}
+            >
+              <Container>
+                <Button
+                  variant="link"
+                  onClick={() => navigate(-1)}
+                  className="text-dark text-decoration-none"
+                  style={{
+                    fontWeight: '500',
+                    marginLeft: '-50px'
+                  }}
+                >
+                  <FaArrowLeft className="me-2" /> Volver
+                </Button>
 
-      {/* Sidebar/Menú desplegable */}
-      <Offcanvas show={showSidebar} onHide={() => setShowSidebar(false)} placement="start" style={{ width: '250px' }}>
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>
-            <FaTimes 
-              style={{ fontSize: '1.5rem', cursor: 'pointer' }} 
-              onClick={() => setShowSidebar(false)}
-            />
-          </Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <Nav className="flex-column">
-            <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Inicio</Nav.Link>
-            <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Catálogo</Nav.Link>
-            <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Contacto</Nav.Link>
-            <Nav.Link href="#" style={{ padding: '10px 15px', fontSize: '1.1rem', color: '#333', borderBottom: '1px solid #eee' }}>Nosotros</Nav.Link>
-          </Nav>
-        </Offcanvas.Body>
-      </Offcanvas>
+                <Navbar.Brand
+                  className="mx-auto"
+                  style={{
+                    fontSize: '1.8rem',
+                    fontWeight: '700',
+                    color: '#333',
+                    letterSpacing: '1px'
+                  }}
+                >
+                  <Nav.Link href='/inicio'>ARMADIRIQUE</Nav.Link>
+                </Navbar.Brand>
 
+                <div style={{ width: '160px' }}></div>
+              </Container>
+            </Navbar>
       {/* Formulario de Login */}
       <Container style={{ paddingTop: '40px', position: 'relative', zIndex: 1 }}>
         <Row className="justify-content-center">
@@ -324,7 +306,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                    <div style={{ textAlign: 'center' }}>
-                    <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1rem' }}>Ingresar con:</p>
+                    {/*<p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1rem' }}>Ingresar con:</p>*/}
                     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                      {/*  <Button variant="outline-danger" style={{
                         padding: '8px 15px',

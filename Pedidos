@@ -1,0 +1,184 @@
+
+import React, { useEffect, useState } from 'react';
+
+
+import { Button, Table, Modal, Form } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+
+
+const Pedidos = () => {
+ 
+  const [pedidos, setPedidos] = useState([]);
+
+  
+  const [showModal, setShowModal] = useState(false);
+
+
+  const [formData, setFormData] = useState({
+    cliente: '',
+    producto: '',
+    cantidad: 1,
+    estado: 'Pendiente',
+  });
+
+
+  const [editando, setEditando] = useState(null);
+
+
+  const fetchPedidos = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/pedidos');
+      const data = await res.json();
+      setPedidos(data);
+    } catch (error) {
+      console.error('Error al obtener pedidos:', error);
+    }
+  };
+
+  
+  const handleGuardar = async () => {
+    try {
+      const url = editando
+        ? `http://localhost:8080/pedidos/${editando.id}`
+        : 'http://localhost:8080/pedidos';
+      const method = editando ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error('Error al guardar pedido');
+
+      toast.success(editando ? 'Pedido actualizado' : 'Pedido creado');
+      setFormData({ cliente: '', producto: '', cantidad: 1, estado: 'Pendiente' });
+      setEditando(null);
+      setShowModal(false);
+      fetchPedidos();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+ 
+  const handleEditar = (pedido) => {
+    setEditando(pedido);
+    setFormData({
+      cliente: pedido.cliente,
+      producto: pedido.producto,
+      cantidad: pedido.cantidad,
+      estado: pedido.estado,
+    });
+    setShowModal(true);
+  };
+
+  
+  const handleEliminar = async (id) => {
+    if (!window.confirm('¿Eliminar este pedido?')) return;
+    try {
+      await fetch(`http://localhost:8080/pedidos/${id}`, { method: 'DELETE' });
+      toast.success('Pedido eliminado');
+      fetchPedidos();
+    } catch (error) {
+      toast.error('Error al eliminar pedido');
+    }
+  };
+
+  
+  useEffect(() => {
+    fetchPedidos();
+  }, []);
+
+
+  return (
+    <div className="container mt-4">
+      <h2>Pedidos</h2>
+
+      {/* Botón para abrir el modal */}
+      <Button onClick={() => setShowModal(true)}>Nuevo pedido</Button>
+
+      {/* Tabla de pedidos */}
+      <Table striped bordered hover className="mt-3">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {pedidos.map((pedido) => (
+            <tr key={pedido.id}>
+              <td>{pedido.cliente}</td>
+              <td>{pedido.producto}</td>
+              <td>{pedido.cantidad}</td>
+              <td>{pedido.estado}</td>
+              <td>
+                <Button size="sm" onClick={() => handleEditar(pedido)}>Editar</Button>{' '}
+                <Button size="sm" variant="danger" onClick={() => handleEliminar(pedido.id)}>Eliminar</Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+      {/* Modal para crear o editar pedido */}
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>{editando ? 'Editar Pedido' : 'Nuevo Pedido'}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Cliente</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.cliente}
+                onChange={(e) => setFormData({ ...formData, cliente: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Producto</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.producto}
+                onChange={(e) => setFormData({ ...formData, producto: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Cantidad</Form.Label>
+              <Form.Control
+                type="number"
+                min="1"
+                value={formData.cantidad}
+                onChange={(e) => setFormData({ ...formData, cantidad: parseInt(e.target.value) })}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Estado</Form.Label>
+              <Form.Control
+                as="select"
+                value={formData.estado}
+                onChange={(e) => setFormData({ ...formData, estado: e.target.value })}
+              >
+                <option>Pendiente</option>
+                <option>En proceso</option>
+                <option>Entregado</option>
+              </Form.Control>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
+          <Button onClick={handleGuardar}>{editando ? 'Actualizar' : 'Guardar'}</Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
+  );
+};
+
+// Exportamos el componente
+export default Pedidos;
