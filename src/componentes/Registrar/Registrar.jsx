@@ -231,11 +231,11 @@ const Registrar = () => {
       nombre: formData.nombre,
       apellidos: formData.apellido,
       direccion: formData.direccion,
-      ciudad: formData.ciudad,
+      ciudad: formData.ciudad, // Puedes cambiar esto según tu lógica
       provincia: formData.provincia,
       distrito: formData.distrito,
       codigopostal: formData.codigopostal,
-      telefono: `+51${formData.telefono}`,
+      telefono: `${formData.telefono}`,
       email: formData.email,
       estado: true,
       perfil: "foto.png",

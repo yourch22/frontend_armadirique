@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Swal from "sweetalert2";
 import ProductosTable from "./ProductosTable";
+import CategoriasTable from "./CategoriasTable";
+import UsuariosTable from "./UsuariosTable";
 import "./styleadmin.css"; // Importa el CSS personalizado
 const DashboardAdmin = () => {
   const [usuario, setUsuario] = useState(null);
+  const [usuarios, setUsuarios] = useState([]);
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [vistaActual, setVistaActual] = useState("inicio");
@@ -58,6 +61,7 @@ const DashboardAdmin = () => {
     };
 
     fetchUsuario();
+    fetchUsuarios();
     fetchProductos(); // Llamamos a fetchProductos inicialmente
     fetchCategorias(); // Cargamos las categorías al inicio
   }, []);
@@ -104,6 +108,23 @@ const DashboardAdmin = () => {
       setCategorias(data);
     } catch (error) {
       console.error("Error cargando categorías:", error);
+    }
+  };
+  // Función para cargar categorías
+  const fetchUsuarios = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        "http://localhost:8080/api/v1/usuarios",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!response.ok) throw new Error("No se pudo obtener los usuarios");
+      const data = await response.json();
+      setUsuarios(data);
+    } catch (error) {
+      console.error("Error cargando usuarios:", error);
     }
   };
 
@@ -271,6 +292,7 @@ const DashboardAdmin = () => {
       { label: "Inicio", key: "inicio" },
       { label: "Gestión de Usuarios", key: "usuarios" },
       { label: "Gestión de Productos", key: "productos" },
+      { label: "Gestión de Categorias", key: "categorias" },
       { label: "Gestión de Pedidos", key: "pedidos" },
       { label: "Inventario", key: "inventario" },
       { label: "Producción", key: "produccion" },
@@ -311,7 +333,52 @@ const DashboardAdmin = () => {
           </div>
           {vistaActual === "inicio" && <h5>Panel de administración general</h5>}
           {vistaActual === "usuarios" && (
-            <h5>Gestión de usuarios (en construcción)</h5>
+            <>
+              <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
+                <h5 className="mb-2 mb-md-0">Gestión de Usuarios</h5>
+
+                <div className="d-flex flex-column flex-sm-row gap-2">
+                  <button
+                    className="btn btn-success btn-sm"
+                    onClick={() => {
+                      setEditando(false);
+                      setNuevoProducto({
+                        idProducto: null,
+                        nombre: "",
+                        descripcion: "",
+                        precio: "",
+                        stock: "",
+                        imagenUrl: null,
+                        estado: true,
+                        idCategoria: "",
+                        idUsuario: "",
+                      });
+                      setShowModal(true);
+                    }}
+                  >
+                    + Añadir nuevo producto
+                  </button>
+
+                  <button
+                    className="btn btn-outline-success btn-sm"
+                    onClick={exportarExcel}
+                  >
+                    Exportar a Excel
+                  </button>
+                </div>
+              </div>
+
+              {/* Tabla de Productos */}
+              <UsuariosTable
+                usuarios={usuarios}
+                pagination={pagination}
+                handleSizeChange={handleSizeChange}
+                handleSortChange={handleSortChange}
+                handlePageChange={handlePageChange}
+                handleEditar={handleEditar}
+                handleEliminar={handleEliminar}
+              />
+            </>
           )}
           {vistaActual === "productos" && (
             <>
@@ -361,6 +428,55 @@ const DashboardAdmin = () => {
               />
             </>
           )}
+          {vistaActual === "categorias" && (
+            <>
+              <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2 mb-3">
+                <h5 className="mb-2 mb-md-0">Gestión de Categorias</h5>
+
+                <div className="d-flex flex-column flex-sm-row gap-2">
+                  <button
+                    className="btn btn-success btn-sm"
+                    onClick={() => {
+                      setEditando(false);
+                      setNuevoProducto({
+                        idProducto: null,
+                        nombre: "",
+                        descripcion: "",
+                        precio: "",
+                        stock: "",
+                        imagenUrl: null,
+                        estado: true,
+                        idCategoria: "",
+                        idUsuario: "",
+                      });
+                      setShowModal(true);
+                    }}
+                  >
+                    + Añadir nuevo producto
+                  </button>
+
+                  <button
+                    className="btn btn-outline-success btn-sm"
+                    onClick={exportarExcel}
+                  >
+                    Exportar a Excel
+                  </button>
+                </div>
+              </div>
+
+              {/* Tabla de Productos */}
+              <CategoriasTable
+                categorias={categorias}
+                pagination={pagination}
+                handleSizeChange={handleSizeChange}
+                handleSortChange={handleSortChange}
+                handlePageChange={handlePageChange}
+                handleEditar={handleEditar}
+                handleEliminar={handleEliminar}
+              />
+            </>
+          )}
+
           {vistaActual === "pedidos" && (
             <h5>Gestión de pedidos (en construcción)</h5>
           )}

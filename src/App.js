@@ -13,7 +13,7 @@ import Contacto from "./componentes/Contacto/Contacto"
 import ArmadiqueCheckout from "./componentes/Sistema_Pago/ArmadiqueCheckout" // Agregada extensión .jsx
 import ConfirmacionCompra from './componentes/Pedido/ConfirmacionCompra' // Agregada extensión .jsx;
 import MisPedidos from "./componentes/MisPedidos/MisPedidos"; // ajusta la ruta
-
+import GestionPedido from "./componentes/MisPedidos/MisPedidos";
 
 
 import "./App.css"
@@ -43,6 +43,8 @@ function App() {
           <Route path="/mis-pedidos" element={<MisPedidos />} />
           {/* Nueva ruta para el checkout */}
           <Route path="/checkout" element={<ArmadiqueCheckout />} />
+
+
 
           {/* Ruta comodín para rutas inválidas */}
           <Route path="*" element={<Navigate to="/inicio" />} />
