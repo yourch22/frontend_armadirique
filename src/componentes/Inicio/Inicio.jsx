@@ -79,7 +79,7 @@ function Catalogo() {
             <NavbarCliente />
             {/**********************************carroulsse******************************************************* */}
 
-            <div style={{ position: 'relative', width: '100%', height: '400px', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
 
                 <img
                     src={images[index]}
@@ -87,7 +87,6 @@ function Catalogo() {
                     style={{
                         width: '100%',  
                         height: 'auto',   
-                        position: 'absolute',
                         bottom: 0,
                         left: 0,
 
