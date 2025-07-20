@@ -16,7 +16,7 @@ const MisPedidos = () => {
       }
 
       try {
-        const response = await fetch("http://localhost:8080/api/v1/pedidos/mis-pedidos", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/v1/pedidos/mis-pedidos`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
